@@ -8,14 +8,14 @@
 <style>
 :root {
   --navy:#0f2640;--navy2:#162f4f;--navy3:#1e3d60;
-  --cream:#ffffff;--cream2:rgba(255,255,255,.65);
+  --cream:#e8dfc8;--cream2:#a8b8cc;
   --gold:#c9a84c;--gold-light:rgba(201,168,76,.15);
   --green:#4ade80;--green-light:rgba(74,222,128,.13);
   --yellow:#fbbf24;--yellow-light:rgba(251,191,36,.13);
   --red:#f87171;--red-light:rgba(248,113,113,.13);
   --orange:#fb923c;--orange-light:rgba(251,146,60,.13);
   --grey:rgba(255,255,255,.18);--grey-light:rgba(255,255,255,.06);
-  --text:#fff;--text2:rgba(255,255,255,.65);
+  --text:var(--cream);--text2:var(--cream2);
   --border:rgba(255,255,255,.1);--border2:rgba(255,255,255,.06);
   --shadow:0 4px 24px rgba(0,0,0,.35);--r:12px;
   --font:'Segoe UI',-apple-system,BlinkMacSystemFont,sans-serif;
@@ -243,8 +243,14 @@ tbody td{padding:9px 14px;color:var(--cream)}
     <div class="ccrd"><div class="ctitle">Investimento por Rede Social / Canal</div><div class="csub">Total investido no período por canal</div><div class="cwrap"><canvas id="ch-invest-canal"></canvas></div></div>
   </div>
 
+  <div class="sec">Seguidores por Rede Social</div>
+  <div class="tcrd"><div class="thdr"><h3>👥 Seguidores D-1 por Rede Social</h3></div><div class="tscroll"><table id="tbl-seg-rede"><thead><tr><th onclick="sortTable(this)">Rede Social</th><th onclick="sortTable(this)" class="tr">Seguidores D-1</th><th onclick="sortTable(this)" class="tr">Var. vs D-2</th></tr></thead><tbody></tbody></table></div></div>
+
+  <div class="sec">Leads por Canal de Captação</div>
+  <div class="tcrd"><div class="thdr"><h3>🎯 Leads por Canal — Acumulado e D-1</h3></div><div class="tscroll"><table id="tbl-leads-canal"><thead><tr><th onclick="sortTable(this)">Canal</th><th onclick="sortTable(this)" class="tr">Acumulado Mês</th><th onclick="sortTable(this)" class="tr">D-1</th><th onclick="sortTable(this)" class="tr">% do Total</th><th onclick="sortTable(this)" class="tc">Tendência</th></tr></thead><tbody></tbody></table></div></div>
+
   <div class="sec">Tabelas Detalhadas</div>
-  <div class="tcrd"><div class="thdr"><h3>📊 Leads por Fonte</h3></div><div class="tscroll"><table id="tbl-leads-fonte"><thead><tr><th onclick="sortTable(this)">Fonte</th><th onclick="sortTable(this)" class="tr">Meta Mensal</th><th onclick="sortTable(this)" class="tr">Realizado</th><th onclick="sortTable(this)" class="tr">D-1</th><th onclick="sortTable(this)" class="tr">% Atingido</th><th class="tc">Tendência</th></tr></thead><tbody></tbody></table></div></div>
+  <div class="tcrd"><div class="thdr"><h3>⭐ Leads Qualificados por Meio</h3></div><div class="tscroll"><table id="tbl-leads-fonte"><thead><tr><th onclick="sortTable(this)">Meio de Captação</th><th onclick="sortTable(this)" class="tr">Meta Mensal</th><th onclick="sortTable(this)" class="tr">Realizado</th><th onclick="sortTable(this)" class="tr">D-1</th><th onclick="sortTable(this)" class="tr">% Atingido</th><th class="tc">Tendência</th></tr></thead><tbody></tbody></table></div></div>
   <div class="tcrd"><div class="thdr"><h3>📱 Atividade em Redes Sociais</h3></div><div class="tscroll"><table id="tbl-redes"><thead><tr><th onclick="sortTable(this)">Rede Social</th><th onclick="sortTable(this)">Responsável</th><th onclick="sortTable(this)" class="tc">Feed Obj.</th><th onclick="sortTable(this)" class="tc">Feed Real.</th><th onclick="sortTable(this)" class="tc">Feed D-1</th><th onclick="sortTable(this)" class="tc">Stories Obj.</th><th onclick="sortTable(this)" class="tc">Stories Real.</th><th onclick="sortTable(this)" class="tc">Stories D-1</th></tr></thead><tbody></tbody></table></div></div>
 </div>
 
@@ -908,7 +914,10 @@ function renderGeral(d, prev) {
   const mkt = d.marketing; const com = d.comercial;
   const totalInvest     = mkt.trafego.reduce((s,t)=>s+t.custoMes,0);
   const totalLeadsTraf  = mkt.trafego.reduce((s,t)=>s+t.leads,0);          // para CPL (plataformas)
-  const totalLeads      = (mkt.leadsFonte||[]).reduce((s,f)=>s+(f.realizado||0),0); // para card (CRM)
+  // totalLeads: usa leadsCanal (granular) se disponível, senão leadsFonte (retrocompat)
+  const totalLeads      = mkt.leadsCanal && mkt.leadsCanal.some(c=>c.acumulado>0)
+    ? mkt.leadsCanal.reduce((s,c)=>s+(c.acumulado||0),0)
+    : (mkt.leadsFonte||[]).reduce((s,f)=>s+(f.realizado||0),0);
   const cpl = totalLeadsTraf ? totalInvest/totalLeadsTraf : 0;
   // Atividades comerciais acumuladas no mês
   const totalEfet = com.equipe.reduce((s,e)=>s+(e.efetTotal||0),0);
@@ -925,7 +934,10 @@ function renderGeral(d, prev) {
   if (prev) {
     const pi  = prev.marketing.trafego.reduce((s,t)=>s+t.custoMes,0);
     const plt = prev.marketing.trafego.reduce((s,t)=>s+t.leads,0);
-    const pl  = (prev.marketing.leadsFonte||[]).reduce((s,f)=>s+(f.realizado||0),0);
+    const pm  = prev.marketing;
+    const pl  = pm.leadsCanal && pm.leadsCanal.some(c=>c.acumulado>0)
+      ? pm.leadsCanal.reduce((s,c)=>s+(c.acumulado||0),0)
+      : (pm.leadsFonte||[]).reduce((s,f)=>s+(f.realizado||0),0);
     const pc  = plt ? pi/plt : 0;
     const pe  = prev.comercial.equipe.reduce((s,e)=>s+(e.efetTotal||0)+(e.fac||0),0);
     const pd  = prev.comercial.documentacao.reduce((s,d)=>s+(d.docFin||0)+(d.analises||0),0);
@@ -1016,6 +1028,8 @@ function renderMarketing(d, prev) {
   buildInvestCanalChart(mkt.trafego);
   buildTableLeadsFonte(mkt.leadsFonte, prev?.marketing?.leadsFonte);
   buildTableRedes(mkt.redesSociais);
+  buildTableSegRede(mkt.seguidoresPorRede || [], prev?.marketing?.seguidoresPorRede || []);
+  buildTableLeadsCanal(mkt.leadsCanal || [], prev?.marketing?.leadsCanal || []);
 }
 
 // ============================================================
@@ -1462,6 +1476,71 @@ function buildTableLeadsFonte(fontes, prevFontes) {
       <td class="tc">${tendArrow(f.d1, prev?.d1)}</td>
     </tr>`;
   }).join('');
+}
+
+// ── Seguidores por Rede Social ──
+function buildTableSegRede(segPorRede, prevSeg) {
+  const tbody = document.querySelector('#tbl-seg-rede tbody');
+  if (!tbody) return;
+  const prevMap = {};
+  (prevSeg||[]).forEach(r => { prevMap[r.rede] = r.d1||0; });
+  const ativos = segPorRede.filter(r => r.d1 > 0);
+  if (!ativos.length) {
+    tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;color:var(--cream2);padding:16px">Sem dados de seguidores para este dia.</td></tr>`;
+    return;
+  }
+  const total = ativos.reduce((s,r)=>s+(r.d1||0),0);
+  const prevTotal = (prevSeg||[]).reduce((s,r)=>s+(r.d1||0),0);
+  tbody.innerHTML = ativos.map(r => {
+    const diff = (r.d1||0) - (prevMap[r.rede]||0);
+    const diffHtml = diff === 0 ? '<span class="neu">→</span>'
+      : diff > 0 ? `<span class="up">+${fmtN(diff)}</span>`
+      : `<span class="dn">${fmtN(diff)}</span>`;
+    return `<tr>
+      <td>${r.rede}</td>
+      <td class="tr" style="font-weight:700">${fmtN(r.d1||0)}</td>
+      <td class="tc">${diffHtml}</td>
+    </tr>`;
+  }).join('') + `<tr style="border-top:1px solid rgba(255,255,255,.12);font-weight:700">
+    <td>Total</td>
+    <td class="tr">${fmtN(total)}</td>
+    <td class="tc">${prevTotal ? (total>prevTotal?`<span class="up">+${fmtN(total-prevTotal)}</span>`:`<span class="dn">${fmtN(total-prevTotal)}</span>`) : '<span class="neu">—</span>'}</td>
+  </tr>`;
+}
+
+// ── Leads por Canal de Captação ──
+function buildTableLeadsCanal(leadsCanal, prevCanal) {
+  const tbody = document.querySelector('#tbl-leads-canal tbody');
+  if (!tbody) return;
+  const prevMap = {};
+  (prevCanal||[]).forEach(c => { prevMap[c.canal] = {acumulado:c.acumulado||0, d1:c.d1||0}; });
+  const ativos = leadsCanal.filter(c => (c.acumulado||0)+(c.d1||0) > 0);
+  if (!ativos.length) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--cream2);padding:16px">Sem dados de leads por canal para este dia.</td></tr>`;
+    return;
+  }
+  const totalAcum = ativos.reduce((s,c)=>s+(c.acumulado||0),0);
+  const totalD1   = ativos.reduce((s,c)=>s+(c.d1||0),0);
+  tbody.innerHTML = ativos.map(c => {
+    const pct = totalAcum ? ((c.acumulado||0)/totalAcum*100).toFixed(1)+'%' : '—';
+    const diff = (c.d1||0) - (prevMap[c.canal]?.d1||0);
+    const trend = diff === 0 ? '<span class="neu">→</span>'
+      : diff > 0 ? `<span class="up">↑</span>`
+      : `<span class="dn">↓</span>`;
+    return `<tr>
+      <td>${c.canal}</td>
+      <td class="tr">${fmtN(c.acumulado||0)}</td>
+      <td class="tr" style="font-weight:700">${fmtN(c.d1||0)}</td>
+      <td class="tr">${pct}</td>
+      <td class="tc">${trend}</td>
+    </tr>`;
+  }).join('') + `<tr style="border-top:1px solid rgba(255,255,255,.12);font-weight:700">
+    <td>Total</td>
+    <td class="tr">${fmtN(totalAcum)}</td>
+    <td class="tr">${fmtN(totalD1)}</td>
+    <td class="tr">100%</td>
+    <td class="tc">—</td>
+  </tr>`;
 }
 
 function buildTableRedes(redes) {
