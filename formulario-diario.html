@@ -145,18 +145,71 @@ body{background:var(--navy);color:var(--cream);font-family:'Segoe UI',Arial,sans
     </tbody>
   </table>
 
-  <p class="sec-title">📊 Seguidores & Leads — Acumulado Mês</p>
-  <div class="grid grid-3" style="margin-bottom:12px">
-    <div class="field"><label>Seguidores Acumulados</label><input type="number" id="seg-real" min="0" placeholder="ex: 3728"></div>
-    <div class="field"><label>Seguidores Ontem (D-1)</label><input type="number" id="seg-d1" min="0" placeholder="ex: 210"></div>
-    <div class="field"><label>Lead Qualificado Acumulado</label><input type="number" id="lq-real" min="0" placeholder="ex: 233"></div>
+  <p class="sec-title">👥 Seguidores por Rede Social (D-1)</p>
+  <div class="grid grid-2" style="margin-bottom:14px">
+    <div class="field"><label>Total de Seguidores Acumulados</label><input type="number" id="seg-real" min="0" placeholder="ex: 38000"></div>
   </div>
-  <div class="grid grid-4">
-    <div class="field"><label>Lead Qual. D-1 — TikTok Pabla</label><input type="number" id="lq-ttp-d1" min="0" value="0"></div>
-    <div class="field"><label>Lead Qual. D-1 — TikTok Elias</label><input type="number" id="lq-tte-d1" min="0" value="0"></div>
-    <div class="field"><label>Lead Qual. D-1 — Meta</label><input type="number" id="lq-meta-d1" min="0" value="0"></div>
-    <div class="field"><label>Lead Qual. D-1 — Indicação</label><input type="number" id="lq-ind-d1" min="0" value="0"></div>
-  </div>
+  <table class="tbl-form">
+    <thead>
+      <tr>
+        <th>Rede Social</th>
+        <th>Seguidores D-1</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Instagram</td><td><input type="number" id="seg-ig-d1" min="0" value="0"></td></tr>
+      <tr><td>TikTok</td><td><input type="number" id="seg-tt-d1" min="0" value="0"></td></tr>
+      <tr><td>Facebook</td><td><input type="number" id="seg-fb-d1" min="0" value="0"></td></tr>
+      <tr><td>YouTube</td><td><input type="number" id="seg-yt-d1" min="0" value="0"></td></tr>
+      <tr><td>LinkedIn</td><td><input type="number" id="seg-li-d1" min="0" value="0"></td></tr>
+      <tr><td>Outros</td><td><input type="number" id="seg-outros-d1" min="0" value="0"></td></tr>
+    </tbody>
+  </table>
+
+  <p class="sec-title">🎯 Leads por Canal de Captação</p>
+  <table class="tbl-form">
+    <thead>
+      <tr>
+        <th>Canal</th>
+        <th>Acumulado Mês</th>
+        <th>D-1</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Instagram</td><td><input type="number" id="leads-ig-acum" min="0" value="0"></td><td><input type="number" id="leads-ig-d1" min="0" value="0"></td></tr>
+      <tr><td>TikTok</td><td><input type="number" id="leads-tt-acum" min="0" value="0"></td><td><input type="number" id="leads-tt-d1" min="0" value="0"></td></tr>
+      <tr><td>Google</td><td><input type="number" id="leads-gg-acum" min="0" value="0"></td><td><input type="number" id="leads-gg-d1" min="0" value="0"></td></tr>
+      <tr><td>Facebook</td><td><input type="number" id="leads-fb-acum" min="0" value="0"></td><td><input type="number" id="leads-fb-d1" min="0" value="0"></td></tr>
+      <tr><td>WhatsApp</td><td><input type="number" id="leads-wa-acum" min="0" value="0"></td><td><input type="number" id="leads-wa-d1" min="0" value="0"></td></tr>
+      <tr><td>Indicação</td><td><input type="number" id="leads-ind-acum" min="0" value="0"></td><td><input type="number" id="leads-ind-d1" min="0" value="0"></td></tr>
+      <tr><td>Orgânico</td><td><input type="number" id="leads-org-acum" min="0" value="0"></td><td><input type="number" id="leads-org-d1" min="0" value="0"></td></tr>
+      <tr><td>Site</td><td><input type="number" id="leads-site-acum" min="0" value="0"></td><td><input type="number" id="leads-site-d1" min="0" value="0"></td></tr>
+      <tr><td>Landing Page</td><td><input type="number" id="leads-lp-acum" min="0" value="0"></td><td><input type="number" id="leads-lp-d1" min="0" value="0"></td></tr>
+    </tbody>
+  </table>
+
+  <p class="sec-title">⭐ Leads Qualificados por Meio de Captação</p>
+  <table class="tbl-form">
+    <thead>
+      <tr>
+        <th>Meio de Captação</th>
+        <th>Acumulado Mês</th>
+        <th>D-1</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>TikTok Dr. Elias</td><td><input type="number" id="lq-tte-real" min="0" value="0"></td><td><input type="number" id="lq-tte-d1" min="0" value="0"></td></tr>
+      <tr><td>TikTok Dr. Pabla</td><td><input type="number" id="lq-ttp-real" min="0" value="0"></td><td><input type="number" id="lq-ttp-d1" min="0" value="0"></td></tr>
+      <tr><td>Instagram</td><td><input type="number" id="lq-ig-real" min="0" value="0"></td><td><input type="number" id="lq-ig-d1" min="0" value="0"></td></tr>
+      <tr><td>Google Ads</td><td><input type="number" id="lq-gg-real" min="0" value="0"></td><td><input type="number" id="lq-gg-d1" min="0" value="0"></td></tr>
+      <tr><td>Meta Ads</td><td><input type="number" id="lq-meta-real" min="0" value="0"></td><td><input type="number" id="lq-meta-d1" min="0" value="0"></td></tr>
+      <tr><td>Landing Page</td><td><input type="number" id="lq-lp-real" min="0" value="0"></td><td><input type="number" id="lq-lp-d1" min="0" value="0"></td></tr>
+      <tr><td>WhatsApp</td><td><input type="number" id="lq-wa-real" min="0" value="0"></td><td><input type="number" id="lq-wa-d1" min="0" value="0"></td></tr>
+      <tr><td>Indicação</td><td><input type="number" id="lq-ind-real" min="0" value="0"></td><td><input type="number" id="lq-ind-d1" min="0" value="0"></td></tr>
+      <tr><td>Orgânico</td><td><input type="number" id="lq-org-real" min="0" value="0"></td><td><input type="number" id="lq-org-d1" min="0" value="0"></td></tr>
+      <tr><td>Outros Meios</td><td><input type="number" id="lq-outros-real" min="0" value="0"></td><td><input type="number" id="lq-outros-d1" min="0" value="0"></td></tr>
+    </tbody>
+  </table>
 
   <p class="sec-title">💰 Tráfego Pago — Acumulado Mês</p>
   <table class="tbl-form">
@@ -357,13 +410,57 @@ function v(id) {
 }
 
 function collectMarketing() {
+  // Seguidores por rede social (D-1)
+  const segPorRede = [
+    {rede:'Instagram', d1:v('seg-ig-d1')},
+    {rede:'TikTok',    d1:v('seg-tt-d1')},
+    {rede:'Facebook',  d1:v('seg-fb-d1')},
+    {rede:'YouTube',   d1:v('seg-yt-d1')},
+    {rede:'LinkedIn',  d1:v('seg-li-d1')},
+    {rede:'Outros',    d1:v('seg-outros-d1')},
+  ];
+
+  // Leads por canal de captação (acumulado + D-1)
+  const leadsCanal = [
+    {canal:'Instagram',    acumulado:v('leads-ig-acum'),   d1:v('leads-ig-d1')},
+    {canal:'TikTok',       acumulado:v('leads-tt-acum'),   d1:v('leads-tt-d1')},
+    {canal:'Google',       acumulado:v('leads-gg-acum'),   d1:v('leads-gg-d1')},
+    {canal:'Facebook',     acumulado:v('leads-fb-acum'),   d1:v('leads-fb-d1')},
+    {canal:'WhatsApp',     acumulado:v('leads-wa-acum'),   d1:v('leads-wa-d1')},
+    {canal:'Indicação',    acumulado:v('leads-ind-acum'),  d1:v('leads-ind-d1')},
+    {canal:'Orgânico',     acumulado:v('leads-org-acum'),  d1:v('leads-org-d1')},
+    {canal:'Site',         acumulado:v('leads-site-acum'), d1:v('leads-site-d1')},
+    {canal:'Landing Page', acumulado:v('leads-lp-acum'),   d1:v('leads-lp-d1')},
+  ];
+
+  // Leads qualificados por meio (acumulado + D-1)
+  const leadsFonte = [
+    {fonte:'TikTok Dr. Elias', meta:16, realizado:v('lq-tte-real'),    d1:v('lq-tte-d1')},
+    {fonte:'TikTok Dr. Pabla', meta:16, realizado:v('lq-ttp-real'),    d1:v('lq-ttp-d1')},
+    {fonte:'Instagram',        meta:0,  realizado:v('lq-ig-real'),     d1:v('lq-ig-d1')},
+    {fonte:'Google Ads',       meta:0,  realizado:v('lq-gg-real'),     d1:v('lq-gg-d1')},
+    {fonte:'Meta Ads',         meta:16, realizado:v('lq-meta-real'),   d1:v('lq-meta-d1')},
+    {fonte:'Landing Page',     meta:0,  realizado:v('lq-lp-real'),     d1:v('lq-lp-d1')},
+    {fonte:'WhatsApp',         meta:0,  realizado:v('lq-wa-real'),     d1:v('lq-wa-d1')},
+    {fonte:'Indicação',        meta:14, realizado:v('lq-ind-real'),    d1:v('lq-ind-d1')},
+    {fonte:'Orgânico',         meta:0,  realizado:v('lq-org-real'),    d1:v('lq-org-d1')},
+    {fonte:'Outros Meios',     meta:0,  realizado:v('lq-outros-real'), d1:v('lq-outros-d1')},
+  ];
+
+  const lqReal = leadsFonte.reduce((s,m) => s + m.realizado, 0);
+  const lqD1   = leadsFonte.reduce((s,m) => s + m.d1, 0);
+  const segD1  = segPorRede.reduce((s,r) => s + r.d1, 0);
+
   return {
     seguidoresMeta: 1554,
     seguidoresReal: v('seg-real'),
-    seguidoresD1: v('seg-d1'),
+    seguidoresD1: segD1,
+    seguidoresPorRede: segPorRede,
     leadsQualMeta: 62,
-    leadsQualReal: v('lq-real'),
-    leadsQualD1: v('lq-ttp-d1') + v('lq-tte-d1') + v('lq-meta-d1') + v('lq-ind-d1'),
+    leadsQualReal: lqReal,
+    leadsQualD1: lqD1,
+    leadsCanal,
+    leadsFonte,
     trafego: [
       {canal:'Google',  orcamento:2375, custoMes:v('tr-gg-custo'), cliques:v('tr-gg-cli'), cpc:v('tr-gg-cpc'), leads:v('tr-gg-leads'), cpl:v('tr-gg-cpl')},
       {canal:'Meta',    orcamento:2375, custoMes:v('tr-mt-custo'), cliques:v('tr-mt-cli'), cpc:v('tr-mt-cpc'), leads:v('tr-mt-leads'), cpl:v('tr-mt-cpl')},
@@ -383,13 +480,6 @@ function collectMarketing() {
       {rede:'LinkedIn Mendes', resp:'Mendes', feedObj:5, feedReal:v('rs-lim-fr'), feedD1:v('rs-lim-fd1'), storiesObj:15, storiesReal:v('rs-lim-sr'), storiesD1:v('rs-lim-sd1')},
       {rede:'YouTube',         resp:'Mendes', feedObj:15,feedReal:v('rs-yt-fr'),  feedD1:v('rs-yt-fd1'),  storiesObj:15, storiesReal:v('rs-yt-sr'),  storiesD1:v('rs-yt-sd1')},
     ],
-    leadsFonte: [
-      {fonte:'TikTok Dr. Pabla', meta:16, realizado:v('lq-real'), d1:v('lq-ttp-d1')},
-      {fonte:'TikTok Dr. Elias', meta:16, realizado:v('lq-real'), d1:v('lq-tte-d1')},
-      {fonte:'Meta',             meta:16, realizado:v('lq-real'), d1:v('lq-meta-d1')},
-      {fonte:'Indicação',        meta:14, realizado:0,            d1:v('lq-ind-d1')},
-      {fonte:'Outros Meios',     meta:0,  realizado:0,            d1:0},
-    ],
     trendLeads:  [0,0,0,0,0,0,0],
     trendQualif: [0,0,0,0,0,0,0],
   };
@@ -405,143 +495,4 @@ function collectComercial() {
       {responsavel:'Graciele', contatoEfetivo:v('doc-gra-cont-mes'), docFin:v('doc-gra-doc-mes'), analises:v('doc-gra-anal-mes'), contatoD1:v('doc-gra-cont'), docD1:v('doc-gra-doc'), analisesD1:v('doc-gra-anal')},
       {responsavel:'Marielle', contatoEfetivo:v('doc-mar-cont-mes'), docFin:v('doc-mar-doc-mes'), analises:v('doc-mar-anal-mes'), contatoD1:v('doc-mar-cont'), docD1:v('doc-mar-doc'), analisesD1:v('doc-mar-anal')},
     ],
-    oportunidadesMeta: 27, oportunidadesReal: v('opc-real'), oportunidadesD1: v('opc-d1'),
-    contratosMeta: 16,     contratosReal: v('con-real'),     contratosD1: v('con-d1'),
-  };
-}
-
-function collectJuridico() {
-  function comp(resp, pfx) {
-    const atras = v(pfx+'-atras'), dia = v(pfx+'-dia'), cump = v(pfx+'-cump');
-    const total = atras + dia;
-    return {resp, atrasados:atras, cumpridosD1:cump, compDia:dia, saldo:atras-cump, agenda:v(pfx+'-agenda'), taxa: total ? Math.round(cump/total*100) : 0};
-  }
-  const pubAdm = v('mov-adm-pub'), movAdm = v('mov-adm-mov');
-  const pubJud = v('mov-jud-pub'), movJud = v('mov-jud-mov');
-  return {
-    processosJudicial: v('jur-proc-jud'),
-    processosAdm: v('jur-proc-adm'),
-    compromissos: [
-      comp('Elias e Marlon','jc-em'), comp('Pabla','jc-pb'), comp('Thamyres','jc-th'),
-      comp('Debora','jc-db'),         comp('Vinicius','jc-vi'), comp('Leticia','jc-le'),
-      comp('Graciele','jc-gr'),       comp('Comercial','jc-co'), comp('Secretaria','jc-sc'),
-    ],
-    movimentacao: {
-      adm:     {publicacoes:pubAdm, movimento:movAdm, pendAjuiz:0, ajuizados:0, ativos:v('jur-proc-adm')},
-      judicial:{publicacoes:pubJud, movimento:movJud, pendAjuiz:0, ajuizados:0, ativos:v('jur-proc-jud')},
-    },
-    movD1: pubAdm + movAdm + pubJud + movJud,
-    trendTaxa: [65,68,70,67,72,70,71],
-  };
-}
-
-function buildPayload() {
-  const date = document.getElementById('report-date').value;
-  const all = {
-    marketing: savedSections.mkt || collectMarketing(),
-    comercial: savedSections.com || collectComercial(),
-    juridico:  savedSections.jur || collectJuridico(),
-    projetos:  {porResponsavel:[], trendConcl:[0,0,0,0,0,0,0], trendAnd:[0,0,0,0,0,0,0], trendAtras:[0,0,0,0,0,0,0]},
-  };
-  return {date, data: all};
-}
-
-// ── SALVAR SEÇÃO ──
-async function saveSection() {
-  const date = document.getElementById('report-date').value;
-  if (!date) { toast('Informe a data antes de salvar.','r'); return; }
-
-  // Coletar seção atual
-  const collectors = {mkt: collectMarketing, com: collectComercial, jur: collectJuridico};
-  const sectionData = collectors[currentTab]();
-  savedSections[currentTab] = sectionData;
-  saveDraft();
-
-  const sectionNames = {mkt:'marketing', com:'comercial', jur:'juridico'};
-
-  // Tentar enviar ao Apps Script
-  if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'COLE_AQUI_A_URL_DO_APPS_SCRIPT') {
-    document.getElementById('btn-save').disabled = true;
-    document.getElementById('status-msg').textContent = 'Enviando...';
-    try {
-      await fetch(APPS_SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({date, section: sectionNames[currentTab], data: sectionData}),
-      });
-      toast('Seção salva com sucesso! ✓','g');
-      document.getElementById('status-msg').textContent = `✓ ${sectionNames[currentTab]} salvo — ${new Date().toLocaleTimeString('pt-BR')}`;
-    } catch(e) {
-      toast('Erro ao enviar. Dados salvos localmente.','r');
-    }
-    document.getElementById('btn-save').disabled = false;
-  } else {
-    // Sem backend: só salvar local
-    toast('Seção salva localmente. Configure o Apps Script para envio online.','g');
-    document.getElementById('status-msg').textContent = `✓ ${sectionNames[currentTab]} salvo localmente`;
-  }
-}
-
-// ── EXPORTAR JSON ──
-function exportJSON() {
-  // Coletar a seção atual antes de exportar
-  const collectors = {mkt: collectMarketing, com: collectComercial, jur: collectJuridico};
-  savedSections[currentTab] = collectors[currentTab]();
-
-  const payload = buildPayload();
-  const date = payload.date || new Date().toISOString().split('T')[0];
-  const json = JSON.stringify(payload, null, 2);
-  const blob = new Blob([json], {type: 'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `relatorio-${date}.json`;
-  a.click();
-  toast('JSON exportado! Importe no dashboard.','g');
-}
-
-// ── RASCUNHO LOCAL ──
-const DRAFT_KEY = 'relatorio_draft_v1';
-function saveDraft() {
-  const date = document.getElementById('report-date').value;
-  try { localStorage.setItem(DRAFT_KEY, JSON.stringify({date, sections: savedSections})); } catch(e) {}
-}
-function loadDraft() {
-  try {
-    const raw = localStorage.getItem(DRAFT_KEY);
-    if (!raw) return;
-    const {date, sections} = JSON.parse(raw);
-    if (date) document.getElementById('report-date').value = date;
-    if (sections) {
-      savedSections = sections;
-      const count = Object.keys(sections).length;
-      if (count > 0) {
-        const names = {mkt:'Marketing', com:'Comercial', jur:'Jurídico'};
-        const filled = Object.keys(sections).map(k => names[k]).join(', ');
-        document.getElementById('status-msg').textContent = `Rascunho: ${filled} já preenchido(s).`;
-      }
-    }
-  } catch(e) {}
-}
-
-// ── LIMPAR ──
-function clearSection() {
-  if (!confirm('Limpar todos os campos desta seção?')) return;
-  document.getElementById('tab-' + currentTab).querySelectorAll('input').forEach(i => {
-    i.value = i.type === 'number' ? '0' : '';
-  });
-  delete savedSections[currentTab];
-  saveDraft();
-  toast('Seção limpa.','g');
-}
-
-// ── TOAST ──
-function toast(msg, type='g') {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className = 'toast show ' + type;
-  setTimeout(() => el.classList.remove('show'), 3500);
-}
-</script>
-</body>
-</html>
+    oportunidadesMeta: 27,
