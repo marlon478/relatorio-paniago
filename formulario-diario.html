@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório Diário — Mendes Paniago</title>
+<style>
+:root {
+  --navy:#0f2640;--navy2:#162f4f;--navy3:#1e3d60;
+  --cream:#e8dfc8;--cream2:#a8b8cc;
+  --gold:#c9a84c;
+  --green:#4ade80;--green-light:rgba(74,222,128,.13);
+  --yellow:#fbbf24;--yellow-light:rgba(251,191,36,.13);
+  --red:#f87171;--red-light:rgba(248,113,113,.13);
+  --border:rgba(255,255,255,.12);
+  --input-bg:rgba(255,255,255,.07);
+  --input-border:rgba(255,255,255,.18);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--navy);color:var(--cream);font-family:'Segoe UI',Arial,sans-serif;min-height:100vh;padding-bottom:60px}
+
+/* HEADER */
+.hdr{background:var(--navy2);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:100}
+.hdr-logo svg{display:block}
+.hdr-title{font-size:16px;font-weight:700;color:var(--cream)}
+.hdr-sub{font-size:11px;color:var(--cream2)}
+.hdr-spacer{flex:1}
+.hdr-date{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--cream2)}
+.hdr-date input[type=date]{background:var(--input-bg);border:1px solid var(--input-border);color:var(--cream);padding:6px 10px;border-radius:6px;font-size:13px;cursor:pointer}
+.hdr-date input[type=date]::-webkit-calendar-picker-indicator{filter:invert(1);opacity:.6}
+
+/* TABS */
+.tabs-nav{background:var(--navy2);border-bottom:1px solid var(--border);padding:0 24px;display:flex;gap:4px}
+.tab-btn{background:none;border:none;border-bottom:3px solid transparent;color:var(--cream2);padding:12px 18px;cursor:pointer;font-size:13px;font-weight:600;transition:.2s;white-space:nowrap}
+.tab-btn:hover{color:var(--cream)}
+.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+.tab-pane{display:none;padding:24px;max-width:900px;margin:0 auto}
+.tab-pane.active{display:block}
+
+/* SECTION TITLE */
+.sec-title{font-size:15px;font-weight:700;color:var(--gold);border-bottom:1px solid var(--border);padding-bottom:8px;margin:24px 0 16px}
+.sec-title:first-child{margin-top:0}
+
+/* GRID */
+.grid{display:grid;gap:12px}
+.grid-2{grid-template-columns:1fr 1fr}
+.grid-3{grid-template-columns:1fr 1fr 1fr}
+.grid-4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:640px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr 1fr}}
+@media(max-width:420px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
+
+/* FIELD */
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:11px;font-weight:600;color:var(--cream2);text-transform:uppercase;letter-spacing:.8px}
+.field input,.field select{background:var(--input-bg);border:1px solid var(--input-border);color:var(--cream);padding:8px 10px;border-radius:6px;font-size:14px;width:100%;transition:.2s}
+.field input:focus,.field select:focus{outline:none;border-color:var(--gold);background:rgba(201,168,76,.08)}
+.field input::placeholder{color:rgba(168,184,204,.4)}
+.field select option{background:var(--navy2)}
+
+/* CARD DE PESSOA */
+.person-card{background:var(--navy2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px}
+.person-card .person-name{font-size:13px;font-weight:700;color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+
+/* TABLE-LIKE */
+.tbl-form{width:100%;border-collapse:separate;border-spacing:0 4px}
+.tbl-form th{font-size:10px;font-weight:600;color:var(--cream2);text-transform:uppercase;letter-spacing:.8px;padding:4px 8px;text-align:left}
+.tbl-form td{padding:3px 4px}
+.tbl-form td:first-child{font-size:12px;color:var(--cream);padding-left:8px;white-space:nowrap;width:180px}
+.tbl-form input{background:var(--input-bg);border:1px solid var(--input-border);color:var(--cream);padding:5px 8px;border-radius:5px;font-size:13px;width:100%;text-align:center}
+.tbl-form input:focus{outline:none;border-color:var(--gold)}
+.tbl-form tr.tbl-header td{font-size:10px;font-weight:700;color:var(--cream2);text-transform:uppercase;letter-spacing:.8px;background:rgba(255,255,255,.04);border-radius:4px}
+
+/* FOOTER */
+.form-footer{position:fixed;bottom:0;left:0;right:0;background:var(--navy2);border-top:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:200}
+.form-footer .status-msg{font-size:12px;color:var(--cream2)}
+.btn{padding:10px 22px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:.2s;letter-spacing:.5px}
+.btn-primary{background:var(--gold);color:var(--navy)}
+.btn-primary:hover{background:#d4b050}
+.btn-secondary{background:transparent;color:var(--cream2);border:1px solid var(--border)}
+.btn-secondary:hover{background:var(--input-bg);color:var(--cream)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* TOAST */
+.toast{position:fixed;top:70px;right:20px;background:var(--navy3);border:1px solid var(--border);color:var(--cream);padding:10px 16px;border-radius:8px;font-size:13px;z-index:999;display:none;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+.toast.show{display:block}
+.toast.g{border-color:var(--green);color:var(--green)}
+.toast.r{border-color:var(--red);color:var(--red)}
+
+/* INFO BOX */
+.info-box{background:var(--yellow-light);border:1px solid rgba(251,191,36,.3);border-radius:8px;padding:12px 16px;font-size:12px;color:var(--yellow);margin-bottom:16px;line-height:1.6}
+
+/* DIVIDER */
+.divider{border:none;border-top:1px solid var(--border);margin:20px 0}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <svg width="100" height="34" viewBox="0 0 130 40" fill="none"><rect width="130" height="40" rx="6" fill="#0f2640"/><rect x="0" y="36.5" width="130" height="2" rx="1" fill="#c9a84c" opacity=".8"/><text x="8" y="17" font-family="'Segoe UI',Arial,sans-serif" font-size="11" font-weight="800" letter-spacing="2.5" fill="#e8dfc8">MENDES</text><text x="8" y="31" font-family="'Segoe UI',Arial,sans-serif" font-size="11" font-weight="800" letter-spacing="2.5" fill="#c9a84c">PANIAGO</text></svg>
+  <div>
+    <div class="hdr-title">Relatório Diário</div>
+    <div class="hdr-sub" id="area-subtitle">Formulário de Preenchimento</div>
+  </div>
+  <div class="hdr-spacer"></div>
+  <div class="hdr-date">
+    <span>Data:</span>
+    <input type="date" id="report-date">
+  </div>
+</header>
+
+<!-- TABS -->
+<nav class="tabs-nav" id="tabs-nav">
+  <button class="tab-btn active" onclick="switchTab('mkt',this)" id="btn-mkt">📣 Marketing</button>
+  <button class="tab-btn" onclick="switchTab('com',this)" id="btn-com">💼 Comercial</button>
+  <button class="tab-btn" onclick="switchTab('jur',this)" id="btn-jur">⚖️ Jurídico</button>
+</nav>
+
+<!-- ====== MARKETING ====== -->
+<div id="tab-mkt" class="tab-pane active">
+
+  <p class="sec-title">📱 Redes Sociais — Postagens do Dia</p>
+  <table class="tbl-form">
+    <thead>
+      <tr>
+        <th>Canal</th>
+        <th>Feed Realizado</th>
+        <th>Feed Ontem</th>
+        <th>Stories Realizado</th>
+        <th>Stories Ontem</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Facebook Mendes Paniago</td><td><input type="number" id="rs-fbm-fr" min="0" value="0"></td><td><input type="number" id="rs-fbm-fd1" min="0" value="0"></td><td><input type="number" id="rs-fbm-sr" min="0" value="0"></td><td><input type="number" id="rs-fbm-sd1" min="0" value="0"></td></tr>
+      <tr><td>Facebook Elias</td><td><input type="number" id="rs-fbe-fr" min="0" value="0"></td><td><input type="number" id="rs-fbe-fd1" min="0" value="0"></td><td><input type="number" id="rs-fbe-sr" min="0" value="0"></td><td><input type="number" id="rs-fbe-sd1" min="0" value="0"></td></tr>
+      <tr><td>Facebook Pabla</td><td><input type="number" id="rs-fbp-fr" min="0" value="0"></td><td><input type="number" id="rs-fbp-fd1" min="0" value="0"></td><td><input type="number" id="rs-fbp-sr" min="0" value="0"></td><td><input type="number" id="rs-fbp-sd1" min="0" value="0"></td></tr>
+      <tr><td>Instagram Mendes Paniago</td><td><input type="number" id="rs-igm-fr" min="0" value="0"></td><td><input type="number" id="rs-igm-fd1" min="0" value="0"></td><td><input type="number" id="rs-igm-sr" min="0" value="0"></td><td><input type="number" id="rs-igm-sd1" min="0" value="0"></td></tr>
+      <tr><td>Instagram Elias</td><td><input type="number" id="rs-ige-fr" min="0" value="0"></td><td><input type="number" id="rs-ige-fd1" min="0" value="0"></td><td><input type="number" id="rs-ige-sr" min="0" value="0"></td><td><input type="number" id="rs-ige-sd1" min="0" value="0"></td></tr>
+      <tr><td>Instagram Pabla</td><td><input type="number" id="rs-igp-fr" min="0" value="0"></td><td><input type="number" id="rs-igp-fd1" min="0" value="0"></td><td><input type="number" id="rs-igp-sr" min="0" value="0"></td><td><input type="number" id="rs-igp-sd1" min="0" value="0"></td></tr>
+      <tr><td>TikTok Pabla</td><td><input type="number" id="rs-ttp-fr" min="0" value="0"></td><td><input type="number" id="rs-ttp-fd1" min="0" value="0"></td><td><input type="number" id="rs-ttp-sr" min="0" value="0"></td><td><input type="number" id="rs-ttp-sd1" min="0" value="0"></td></tr>
+      <tr><td>TikTok Elias</td><td><input type="number" id="rs-tte-fr" min="0" value="0"></td><td><input type="number" id="rs-tte-fd1" min="0" value="0"></td><td><input type="number" id="rs-tte-sr" min="0" value="0"></td><td><input type="number" id="rs-tte-sd1" min="0" value="0"></td></tr>
+      <tr><td>TikTok Mendes Paniago</td><td><input type="number" id="rs-ttm-fr" min="0" value="0"></td><td><input type="number" id="rs-ttm-fd1" min="0" value="0"></td><td><input type="number" id="rs-ttm-sr" min="0" value="0"></td><td><input type="number" id="rs-ttm-sd1" min="0" value="0"></td></tr>
+      <tr><td>LinkedIn Mendes Paniago</td><td><input type="number" id="rs-lim-fr" min="0" value="0"></td><td><input type="number" id="rs-lim-fd1" min="0" value="0"></td><td><input type="number" id="rs-lim-sr" min="0" value="0"></td><td><input type="number" id="rs-lim-sd1" min="0" value="0"></td></tr>
+      <tr><td>YouTube</td><td><input type="number" id="rs-yt-fr" min="0" value="0"></td><td><input type="number" id="rs-yt-fd1" min="0" value="0"></td><td><input type="number" id="rs-yt-sr" min="0" value="0"></td><td><input type="number" id="rs-yt-sd1" min="0" value="0"></td></tr>
+    </tbody>
+  </table>
+
+  <p class="sec-title">📊 Seguidores & Leads — Acumulado Mês</p>
+  <div class="grid grid-3" style="margin-bottom:12px">
+    <div class="field"><label>Seguidores Acumulados</label><input type="number" id="seg-real" min="0" placeholder="ex: 3728"></div>
+    <div class="field"><label>Seguidores Ontem (D-1)</label><input type="number" id="seg-d1" min="0" placeholder="ex: 210"></div>
+    <div class="field"><label>Lead Qualificado Acumulado</label><input type="number" id="lq-real" min="0" placeholder="ex: 233"></div>
+  </div>
+  <div class="grid grid-4">
+    <div class="field"><label>Lead Qual. D-1 — TikTok Pabla</label><input type="number" id="lq-ttp-d1" min="0" value="0"></div>
+    <div class="field"><label>Lead Qual. D-1 — TikTok Elias</label><input type="number" id="lq-tte-d1" min="0" value="0"></div>
+    <div class="field"><label>Lead Qual. D-1 — Meta</label><input type="number" id="lq-meta-d1" min="0" value="0"></div>
+    <div class="field"><label>Lead Qual. D-1 — Indicação</label><input type="number" id="lq-ind-d1" min="0" value="0"></div>
+  </div>
+
+  <p class="sec-title">💰 Tráfego Pago — Acumulado Mês</p>
+  <table class="tbl-form">
+    <thead>
+      <tr>
+        <th>Canal</th>
+        <th>Custo Mês (R$)</th>
+        <th>Cliques</th>
+        <th>CPC (R$)</th>
+        <th>Leads</th>
+        <th>CPL (R$)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Google</td><td><input type="number" id="tr-gg-custo" min="0" step="0.01" value="0"></td><td><input type="number" id="tr-gg-cli" min="0" value="0"></td><td><input type="number" id="tr-gg-cpc" min="0" step="0.01" value="0"></td><td><input type="number" id="tr-gg-leads" min="0" value="0"></td><td><input type="number" id="tr-gg-cpl" min="0" step="0.01" value="0"></td></tr>
+      <tr><td>Meta</td><td><input type="number" id="tr-mt-custo" min="0" step="0.01" value="0"></td><td><input type="number" id="tr-mt-cli" min="0" value="0"></td><td><input type="number" id="tr-mt-cpc" min="0" step="0.01" value="0"></td><td><input type="number" id="tr-mt-leads" min="0" value="0"></td><td><input type="number" id="tr-mt-cpl" min="0" step="0.01" value="0"></td></tr>
+      <tr><td>TikTok</td><td><input type="number" id="tr-tt-custo" min="0" step="0.01" value="0"></td><td><input type="number" id="tr-tt-cli" min="0" value="0"></td><td><input type="number" id="tr-tt-cpc" min="0" step="0.01" value="0"></td><td><input type="number" id="tr-tt-leads" min="0" value="0"></td><td><input type="number" id="tr-tt-cpl" min="0" step="0.01" value="0"></td></tr>
+      <tr><td>LinkedIn</td><td><input type="number" id="tr-li-custo" min="0" step="0.01" value="0"></td><td><input type="number" id="tr-li-cli" min="0" value="0"></td><td><input type="number" id="tr-li-cpc" min="0" step="0.01" value="0"></td><td><input type="number" id="tr-li-leads" min="0" value="0"></td><td><input type="number" id="tr-li-cpl" min="0" step="0.01" value="0"></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ====== COMERCIAL ====== -->
+<div id="tab-com" class="tab-pane">
+
+  <p class="sec-title">📞 Atividade Comercial — D-1</p>
+  <div class="person-card">
+    <div class="person-name">👤 Patricia</div>
+    <div class="grid grid-3">
+      <div class="field"><label>Tentativas D-1</label><input type="number" id="com-pat-tent" min="0" value="0"></div>
+      <div class="field"><label>Efetivas D-1</label><input type="number" id="com-pat-efet" min="0" value="0"></div>
+      <div class="field"><label>FAC D-1</label><input type="number" id="com-pat-fac" min="0" value="0"></div>
+    </div>
+    <hr class="divider">
+    <div class="grid grid-3">
+      <div class="field"><label>Tentativas Mês</label><input type="number" id="com-pat-tent-mes" min="0" value="0"></div>
+      <div class="field"><label>Efetivas Mês</label><input type="number" id="com-pat-efet-mes" min="0" value="0"></div>
+      <div class="field"><label>FAC Mês</label><input type="number" id="com-pat-fac-mes" min="0" value="0"></div>
+    </div>
+  </div>
+  <div class="person-card">
+    <div class="person-name">👤 Marielle</div>
+    <div class="grid grid-3">
+      <div class="field"><label>Tentativas D-1</label><input type="number" id="com-mar-tent" min="0" value="0"></div>
+      <div class="field"><label>Efetivas D-1</label><input type="number" id="com-mar-efet" min="0" value="0"></div>
+      <div class="field"><label>FAC D-1</label><input type="number" id="com-mar-fac" min="0" value="0"></div>
+    </div>
+    <hr class="divider">
+    <div class="grid grid-3">
+      <div class="field"><label>Tentativas Mês</label><input type="number" id="com-mar-tent-mes" min="0" value="0"></div>
+      <div class="field"><label>Efetivas Mês</label><input type="number" id="com-mar-efet-mes" min="0" value="0"></div>
+      <div class="field"><label>FAC Mês</label><input type="number" id="com-mar-fac-mes" min="0" value="0"></div>
+    </div>
+  </div>
+
+  <p class="sec-title">📄 Documentação</p>
+  <div class="person-card">
+    <div class="person-name">👤 Graciele</div>
+    <div class="grid grid-3">
+      <div class="field"><label>Contato Efetivo D-1</label><input type="number" id="doc-gra-cont" min="0" value="0"></div>
+      <div class="field"><label>Docs Finalizados D-1</label><input type="number" id="doc-gra-doc" min="0" value="0"></div>
+      <div class="field"><label>Análises D-1</label><input type="number" id="doc-gra-anal" min="0" value="0"></div>
+    </div>
+    <hr class="divider">
+    <div class="grid grid-3">
+      <div class="field"><label>Contato Efetivo Mês</label><input type="number" id="doc-gra-cont-mes" min="0" value="0"></div>
+      <div class="field"><label>Docs Finalizados Mês</label><input type="number" id="doc-gra-doc-mes" min="0" value="0"></div>
+      <div class="field"><label>Análises Mês</label><input type="number" id="doc-gra-anal-mes" min="0" value="0"></div>
+    </div>
+  </div>
+  <div class="person-card">
+    <div class="person-name">👤 Marielle (Documentação)</div>
+    <div class="grid grid-3">
+      <div class="field"><label>Contato Efetivo D-1</label><input type="number" id="doc-mar-cont" min="0" value="0"></div>
+      <div class="field"><label>Docs Finalizados D-1</label><input type="number" id="doc-mar-doc" min="0" value="0"></div>
+      <div class="field"><label>Análises D-1</label><input type="number" id="doc-mar-anal" min="0" value="0"></div>
+    </div>
+    <hr class="divider">
+    <div class="grid grid-3">
+      <div class="field"><label>Contato Efetivo Mês</label><input type="number" id="doc-mar-cont-mes" min="0" value="0"></div>
+      <div class="field"><label>Docs Finalizados Mês</label><input type="number" id="doc-mar-doc-mes" min="0" value="0"></div>
+      <div class="field"><label>Análises Mês</label><input type="number" id="doc-mar-anal-mes" min="0" value="0"></div>
+    </div>
+  </div>
+
+  <p class="sec-title">🎯 Oportunidades & Contratos</p>
+  <div class="grid grid-4">
+    <div class="field"><label>Oportunidades Mês</label><input type="number" id="opc-real" min="0" value="0"></div>
+    <div class="field"><label>Oportunidades D-1</label><input type="number" id="opc-d1" min="0" value="0"></div>
+    <div class="field"><label>Contratos Mês</label><input type="number" id="con-real" min="0" value="0"></div>
+    <div class="field"><label>Contratos D-1</label><input type="number" id="con-d1" min="0" value="0"></div>
+  </div>
+</div>
+
+<!-- ====== JURÍDICO ====== -->
+<div id="tab-jur" class="tab-pane">
+
+  <p class="sec-title">⚖️ Processos Ativos (D-1)</p>
+  <div class="grid grid-2">
+    <div class="field"><label>Processos Judiciais Ativos</label><input type="number" id="jur-proc-jud" min="0" value="0"></div>
+    <div class="field"><label>Processos Administrativos Ativos</label><input type="number" id="jur-proc-adm" min="0" value="0"></div>
+  </div>
+
+  <p class="sec-title">📋 Movimentação Processual D-1</p>
+  <div class="grid grid-4">
+    <div class="field"><label>ADM — Publicações D-1</label><input type="number" id="mov-adm-pub" min="0" value="0"></div>
+    <div class="field"><label>ADM — Movimento D-1</label><input type="number" id="mov-adm-mov" min="0" value="0"></div>
+    <div class="field"><label>JUD — Publicações D-1</label><input type="number" id="mov-jud-pub" min="0" value="0"></div>
+    <div class="field"><label>JUD — Movimento D-1</label><input type="number" id="mov-jud-mov" min="0" value="0"></div>
+  </div>
+
+  <p class="sec-title">✅ Compromissos por Responsável</p>
+  <table class="tbl-form">
+    <thead>
+      <tr>
+        <th>Responsável</th>
+        <th>Em Atraso</th>
+        <th>Cumpridos D-1</th>
+        <th>Comp. do Dia</th>
+        <th>Na Agenda</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Elias e Marlon</td><td><input type="number" id="jc-em-atras" min="0" value="0"></td><td><input type="number" id="jc-em-cump" min="0" value="0"></td><td><input type="number" id="jc-em-dia" min="0" value="0"></td><td><input type="number" id="jc-em-agenda" min="0" value="0"></td></tr>
+      <tr><td>Pabla</td><td><input type="number" id="jc-pb-atras" min="0" value="0"></td><td><input type="number" id="jc-pb-cump" min="0" value="0"></td><td><input type="number" id="jc-pb-dia" min="0" value="0"></td><td><input type="number" id="jc-pb-agenda" min="0" value="0"></td></tr>
+      <tr><td>Thamyres</td><td><input type="number" id="jc-th-atras" min="0" value="0"></td><td><input type="number" id="jc-th-cump" min="0" value="0"></td><td><input type="number" id="jc-th-dia" min="0" value="0"></td><td><input type="number" id="jc-th-agenda" min="0" value="0"></td></tr>
+      <tr><td>Debora</td><td><input type="number" id="jc-db-atras" min="0" value="0"></td><td><input type="number" id="jc-db-cump" min="0" value="0"></td><td><input type="number" id="jc-db-dia" min="0" value="0"></td><td><input type="number" id="jc-db-agenda" min="0" value="0"></td></tr>
+      <tr><td>Vinicius</td><td><input type="number" id="jc-vi-atras" min="0" value="0"></td><td><input type="number" id="jc-vi-cump" min="0" value="0"></td><td><input type="number" id="jc-vi-dia" min="0" value="0"></td><td><input type="number" id="jc-vi-agenda" min="0" value="0"></td></tr>
+      <tr><td>Leticia</td><td><input type="number" id="jc-le-atras" min="0" value="0"></td><td><input type="number" id="jc-le-cump" min="0" value="0"></td><td><input type="number" id="jc-le-dia" min="0" value="0"></td><td><input type="number" id="jc-le-agenda" min="0" value="0"></td></tr>
+      <tr><td>Graciele</td><td><input type="number" id="jc-gr-atras" min="0" value="0"></td><td><input type="number" id="jc-gr-cump" min="0" value="0"></td><td><input type="number" id="jc-gr-dia" min="0" value="0"></td><td><input type="number" id="jc-gr-agenda" min="0" value="0"></td></tr>
+      <tr><td>Comercial</td><td><input type="number" id="jc-co-atras" min="0" value="0"></td><td><input type="number" id="jc-co-cump" min="0" value="0"></td><td><input type="number" id="jc-co-dia" min="0" value="0"></td><td><input type="number" id="jc-co-agenda" min="0" value="0"></td></tr>
+      <tr><td>Secretaria</td><td><input type="number" id="jc-sc-atras" min="0" value="0"></td><td><input type="number" id="jc-sc-cump" min="0" value="0"></td><td><input type="number" id="jc-sc-dia" min="0" value="0"></td><td><input type="number" id="jc-sc-agenda" min="0" value="0"></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- FOOTER -->
+<div class="form-footer">
+  <div class="status-msg" id="status-msg">Preencha os campos e clique em Salvar Seção.</div>
+  <div style="display:flex;gap:8px">
+    <button class="btn btn-secondary" onclick="clearSection()">🗑 Limpar</button>
+    <button class="btn btn-secondary" onclick="exportJSON()" id="btn-export">⬇ Exportar JSON</button>
+    <button class="btn btn-primary" onclick="saveSection()" id="btn-save">💾 Salvar Seção</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── CONFIGURAÇÃO ──
+// Substitua pela URL do seu Google Apps Script depois de publicar
+const APPS_SCRIPT_URL = https://script.google.com/macros/s/AKfycbw0nlG-nQNgDjvRTUQDvDUxFShoWWbHougyHjr0tFz3E38fX8e0bnTUpya-P0mXW;
+
+// ── ESTADO ──
+let currentTab = 'mkt';
+let savedSections = {};
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', () => {
+  // Data padrão = hoje
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('report-date').value = today;
+
+  // Ler parâmetro ?area= da URL para mostrar só a seção da pessoa
+  const params = new URLSearchParams(window.location.search);
+  const area = params.get('area');
+  if (area && ['mkt','com','jur'].includes(area)) {
+    // Ocultar outras tabs se for acesso de área específica
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      if (!b.id.includes(area)) {
+        if (area !== 'all') b.style.display = 'none';
+      }
+    });
+    switchTab(area, document.getElementById('btn-' + area));
+    const labels = {mkt:'Marketing', com:'Comercial', jur:'Jurídico'};
+    document.getElementById('area-subtitle').textContent = labels[area] || 'Formulário';
+  }
+
+  // Carregar rascunho salvo
+  loadDraft();
+});
+
+// ── TABS ──
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  currentTab = id;
+}
+
+// ── LER VALORES DO FORMULÁRIO ──
+function v(id) {
+  const el = document.getElementById(id);
+  if (!el) return 0;
+  const val = parseFloat(el.value);
+  return isNaN(val) ? 0 : val;
+}
+
+function collectMarketing() {
+  return {
+    seguidoresMeta: 1554,
+    seguidoresReal: v('seg-real'),
+    seguidoresD1: v('seg-d1'),
+    leadsQualMeta: 62,
+    leadsQualReal: v('lq-real'),
+    leadsQualD1: v('lq-ttp-d1') + v('lq-tte-d1') + v('lq-meta-d1') + v('lq-ind-d1'),
+    trafego: [
+      {canal:'Google',  orcamento:2375, custoMes:v('tr-gg-custo'), cliques:v('tr-gg-cli'), cpc:v('tr-gg-cpc'), leads:v('tr-gg-leads'), cpl:v('tr-gg-cpl')},
+      {canal:'Meta',    orcamento:2375, custoMes:v('tr-mt-custo'), cliques:v('tr-mt-cli'), cpc:v('tr-mt-cpc'), leads:v('tr-mt-leads'), cpl:v('tr-mt-cpl')},
+      {canal:'TikTok',  orcamento:2375, custoMes:v('tr-tt-custo'), cliques:v('tr-tt-cli'), cpc:v('tr-tt-cpc'), leads:v('tr-tt-leads'), cpl:v('tr-tt-cpl')},
+      {canal:'LinkedIn',orcamento:2375, custoMes:v('tr-li-custo'), cliques:v('tr-li-cli'), cpc:v('tr-li-cpc'), leads:v('tr-li-leads'), cpl:v('tr-li-cpl')},
+    ],
+    redesSociais: [
+      {rede:'Facebook Mendes', resp:'Mendes', feedObj:5, feedReal:v('rs-fbm-fr'), feedD1:v('rs-fbm-fd1'), storiesObj:15, storiesReal:v('rs-fbm-sr'), storiesD1:v('rs-fbm-sd1')},
+      {rede:'Facebook Elias',  resp:'Elias',  feedObj:5, feedReal:v('rs-fbe-fr'), feedD1:v('rs-fbe-fd1'), storiesObj:15, storiesReal:v('rs-fbe-sr'), storiesD1:v('rs-fbe-sd1')},
+      {rede:'Facebook Pabla',  resp:'Pabla',  feedObj:5, feedReal:v('rs-fbp-fr'), feedD1:v('rs-fbp-fd1'), storiesObj:15, storiesReal:v('rs-fbp-sr'), storiesD1:v('rs-fbp-sd1')},
+      {rede:'Instagram Mendes',resp:'Mendes', feedObj:5, feedReal:v('rs-igm-fr'), feedD1:v('rs-igm-fd1'), storiesObj:15, storiesReal:v('rs-igm-sr'), storiesD1:v('rs-igm-sd1')},
+      {rede:'Instagram Elias', resp:'Elias',  feedObj:5, feedReal:v('rs-ige-fr'), feedD1:v('rs-ige-fd1'), storiesObj:15, storiesReal:v('rs-ige-sr'), storiesD1:v('rs-ige-sd1')},
+      {rede:'Instagram Pabla', resp:'Pabla',  feedObj:5, feedReal:v('rs-igp-fr'), feedD1:v('rs-igp-fd1'), storiesObj:15, storiesReal:v('rs-igp-sr'), storiesD1:v('rs-igp-sd1')},
+      {rede:'TT Pabla',        resp:'Pabla',  feedObj:5, feedReal:v('rs-ttp-fr'), feedD1:v('rs-ttp-fd1'), storiesObj:15, storiesReal:v('rs-ttp-sr'), storiesD1:v('rs-ttp-sd1')},
+      {rede:'TT Elias',        resp:'Elias',  feedObj:5, feedReal:v('rs-tte-fr'), feedD1:v('rs-tte-fd1'), storiesObj:15, storiesReal:v('rs-tte-sr'), storiesD1:v('rs-tte-sd1')},
+      {rede:'TT Mendes Paniago',resp:'Mendes',feedObj:5, feedReal:v('rs-ttm-fr'), feedD1:v('rs-ttm-fd1'), storiesObj:15, storiesReal:v('rs-ttm-sr'), storiesD1:v('rs-ttm-sd1')},
+      {rede:'LinkedIn Mendes', resp:'Mendes', feedObj:5, feedReal:v('rs-lim-fr'), feedD1:v('rs-lim-fd1'), storiesObj:15, storiesReal:v('rs-lim-sr'), storiesD1:v('rs-lim-sd1')},
+      {rede:'YouTube',         resp:'Mendes', feedObj:15,feedReal:v('rs-yt-fr'),  feedD1:v('rs-yt-fd1'),  storiesObj:15, storiesReal:v('rs-yt-sr'),  storiesD1:v('rs-yt-sd1')},
+    ],
+    leadsFonte: [
+      {fonte:'TikTok Dr. Pabla', meta:16, realizado:v('lq-real'), d1:v('lq-ttp-d1')},
+      {fonte:'TikTok Dr. Elias', meta:16, realizado:v('lq-real'), d1:v('lq-tte-d1')},
+      {fonte:'Meta',             meta:16, realizado:v('lq-real'), d1:v('lq-meta-d1')},
+      {fonte:'Indicação',        meta:14, realizado:0,            d1:v('lq-ind-d1')},
+      {fonte:'Outros Meios',     meta:0,  realizado:0,            d1:0},
+    ],
+    trendLeads:  [0,0,0,0,0,0,0],
+    trendQualif: [0,0,0,0,0,0,0],
+  };
+}
+
+function collectComercial() {
+  return {
+    equipe: [
+      {nome:'Patricia', tentTotal:v('com-pat-tent-mes'), efetTotal:v('com-pat-efet-mes'), fac:v('com-pat-fac-mes'), tentD1:v('com-pat-tent'), efetD1:v('com-pat-efet'), facD1:v('com-pat-fac')},
+      {nome:'Marielle', tentTotal:v('com-mar-tent-mes'), efetTotal:v('com-mar-efet-mes'), fac:v('com-mar-fac-mes'), tentD1:v('com-mar-tent'), efetD1:v('com-mar-efet'), facD1:v('com-mar-fac')},
+    ],
+    documentacao: [
+      {responsavel:'Graciele', contatoEfetivo:v('doc-gra-cont-mes'), docFin:v('doc-gra-doc-mes'), analises:v('doc-gra-anal-mes'), contatoD1:v('doc-gra-cont'), docD1:v('doc-gra-doc'), analisesD1:v('doc-gra-anal')},
+      {responsavel:'Marielle', contatoEfetivo:v('doc-mar-cont-mes'), docFin:v('doc-mar-doc-mes'), analises:v('doc-mar-anal-mes'), contatoD1:v('doc-mar-cont'), docD1:v('doc-mar-doc'), analisesD1:v('doc-mar-anal')},
+    ],
+    oportunidadesMeta: 27, oportunidadesReal: v('opc-real'), oportunidadesD1: v('opc-d1'),
+    contratosMeta: 16,     contratosReal: v('con-real'),     contratosD1: v('con-d1'),
+  };
+}
+
+function collectJuridico() {
+  function comp(resp, pfx) {
+    const atras = v(pfx+'-atras'), dia = v(pfx+'-dia'), cump = v(pfx+'-cump');
+    const total = atras + dia;
+    return {resp, atrasados:atras, cumpridosD1:cump, compDia:dia, saldo:atras-cump, agenda:v(pfx+'-agenda'), taxa: total ? Math.round(cump/total*100) : 0};
+  }
+  const pubAdm = v('mov-adm-pub'), movAdm = v('mov-adm-mov');
+  const pubJud = v('mov-jud-pub'), movJud = v('mov-jud-mov');
+  return {
+    processosJudicial: v('jur-proc-jud'),
+    processosAdm: v('jur-proc-adm'),
+    compromissos: [
+      comp('Elias e Marlon','jc-em'), comp('Pabla','jc-pb'), comp('Thamyres','jc-th'),
+      comp('Debora','jc-db'),         comp('Vinicius','jc-vi'), comp('Leticia','jc-le'),
+      comp('Graciele','jc-gr'),       comp('Comercial','jc-co'), comp('Secretaria','jc-sc'),
+    ],
+    movimentacao: {
+      adm:     {publicacoes:pubAdm, movimento:movAdm, pendAjuiz:0, ajuizados:0, ativos:v('jur-proc-adm')},
+      judicial:{publicacoes:pubJud, movimento:movJud, pendAjuiz:0, ajuizados:0, ativos:v('jur-proc-jud')},
+    },
+    movD1: pubAdm + movAdm + pubJud + movJud,
+    trendTaxa: [65,68,70,67,72,70,71],
+  };
+}
+
+function buildPayload() {
+  const date = document.getElementById('report-date').value;
+  const all = {
+    marketing: savedSections.mkt || collectMarketing(),
+    comercial: savedSections.com || collectComercial(),
+    juridico:  savedSections.jur || collectJuridico(),
+    projetos:  {porResponsavel:[], trendConcl:[0,0,0,0,0,0,0], trendAnd:[0,0,0,0,0,0,0], trendAtras:[0,0,0,0,0,0,0]},
+  };
+  return {date, data: all};
+}
+
+// ── SALVAR SEÇÃO ──
+async function saveSection() {
+  const date = document.getElementById('report-date').value;
+  if (!date) { toast('Informe a data antes de salvar.','r'); return; }
+
+  // Coletar seção atual
+  const collectors = {mkt: collectMarketing, com: collectComercial, jur: collectJuridico};
+  const sectionData = collectors[currentTab]();
+  savedSections[currentTab] = sectionData;
+  saveDraft();
+
+  const sectionNames = {mkt:'marketing', com:'comercial', jur:'juridico'};
+
+  // Tentar enviar ao Apps Script
+  if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'COLE_AQUI_A_URL_DO_APPS_SCRIPT') {
+    document.getElementById('btn-save').disabled = true;
+    document.getElementById('status-msg').textContent = 'Enviando...';
+    try {
+      await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({date, section: sectionNames[currentTab], data: sectionData}),
+      });
+      toast('Seção salva com sucesso! ✓','g');
+      document.getElementById('status-msg').textContent = `✓ ${sectionNames[currentTab]} salvo — ${new Date().toLocaleTimeString('pt-BR')}`;
+    } catch(e) {
+      toast('Erro ao enviar. Dados salvos localmente.','r');
+    }
+    document.getElementById('btn-save').disabled = false;
+  } else {
+    // Sem backend: só salvar local
+    toast('Seção salva localmente. Configure o Apps Script para envio online.','g');
+    document.getElementById('status-msg').textContent = `✓ ${sectionNames[currentTab]} salvo localmente`;
+  }
+}
+
+// ── EXPORTAR JSON ──
+function exportJSON() {
+  // Coletar a seção atual antes de exportar
+  const collectors = {mkt: collectMarketing, com: collectComercial, jur: collectJuridico};
+  savedSections[currentTab] = collectors[currentTab]();
+
+  const payload = buildPayload();
+  const date = payload.date || new Date().toISOString().split('T')[0];
+  const json = JSON.stringify(payload, null, 2);
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `relatorio-${date}.json`;
+  a.click();
+  toast('JSON exportado! Importe no dashboard.','g');
+}
+
+// ── RASCUNHO LOCAL ──
+const DRAFT_KEY = 'relatorio_draft_v1';
+function saveDraft() {
+  const date = document.getElementById('report-date').value;
+  try { localStorage.setItem(DRAFT_KEY, JSON.stringify({date, sections: savedSections})); } catch(e) {}
+}
+function loadDraft() {
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    if (!raw) return;
+    const {date, sections} = JSON.parse(raw);
+    if (date) document.getElementById('report-date').value = date;
+    if (sections) {
+      savedSections = sections;
+      const count = Object.keys(sections).length;
+      if (count > 0) {
+        const names = {mkt:'Marketing', com:'Comercial', jur:'Jurídico'};
+        const filled = Object.keys(sections).map(k => names[k]).join(', ');
+        document.getElementById('status-msg').textContent = `Rascunho: ${filled} já preenchido(s).`;
+      }
+    }
+  } catch(e) {}
+}
+
+// ── LIMPAR ──
+function clearSection() {
+  if (!confirm('Limpar todos os campos desta seção?')) return;
+  document.getElementById('tab-' + currentTab).querySelectorAll('input').forEach(i => {
+    i.value = i.type === 'number' ? '0' : '';
+  });
+  delete savedSections[currentTab];
+  saveDraft();
+  toast('Seção limpa.','g');
+}
+
+// ── TOAST ──
+function toast(msg, type='g') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show ' + type;
+  setTimeout(() => el.classList.remove('show'), 3500);
+}
+</script>
+</body>
+</html>
