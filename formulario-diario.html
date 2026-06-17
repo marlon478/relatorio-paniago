@@ -360,7 +360,6 @@ body{background:var(--navy);color:var(--cream);font-family:'Segoe UI',Arial,sans
 
 <script>
 // ── CONFIGURAÇÃO ──
-// Substitua pela URL do seu Google Apps Script depois de publicar
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw9z1gUABU4cjjGNTMcWBAc6Vz6ZxGpYLdlUWeDOpRM2UjThW3lmnPVBmohzFuhjAE5lw/exec';
 
 // ── ESTADO ──
@@ -369,15 +368,12 @@ let savedSections = {};
 
 // ── INIT ──
 document.addEventListener('DOMContentLoaded', () => {
-  // Data padrão = hoje
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('report-date').value = today;
 
-  // Ler parâmetro ?area= da URL para mostrar só a seção da pessoa
   const params = new URLSearchParams(window.location.search);
   const area = params.get('area');
   if (area && ['mkt','com','jur'].includes(area)) {
-    // Ocultar outras tabs se for acesso de área específica
     document.querySelectorAll('.tab-btn').forEach(b => {
       if (!b.id.includes(area)) {
         if (area !== 'all') b.style.display = 'none';
@@ -388,7 +384,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('area-subtitle').textContent = labels[area] || 'Formulário';
   }
 
-  // Carregar rascunho salvo
   loadDraft();
 });
 
@@ -401,7 +396,7 @@ function switchTab(id, btn) {
   currentTab = id;
 }
 
-// ── LER VALORES DO FORMULÁRIO ──
+// ── LER VALORES ──
 function v(id) {
   const el = document.getElementById(id);
   if (!el) return 0;
@@ -409,8 +404,13 @@ function v(id) {
   return isNaN(val) ? 0 : val;
 }
 
+function set(id, val) {
+  const el = document.getElementById(id);
+  if (el && val !== undefined && val !== null) el.value = val;
+}
+
+// ── COLETAR MARKETING ──
 function collectMarketing() {
-  // Seguidores por rede social (D-1)
   const segPorRede = [
     {rede:'Instagram', d1:v('seg-ig-d1')},
     {rede:'TikTok',    d1:v('seg-tt-d1')},
@@ -420,7 +420,6 @@ function collectMarketing() {
     {rede:'Outros',    d1:v('seg-outros-d1')},
   ];
 
-  // Leads por canal de captação (acumulado + D-1)
   const leadsCanal = [
     {canal:'Instagram',    acumulado:v('leads-ig-acum'),   d1:v('leads-ig-d1')},
     {canal:'TikTok',       acumulado:v('leads-tt-acum'),   d1:v('leads-tt-d1')},
@@ -433,7 +432,6 @@ function collectMarketing() {
     {canal:'Landing Page', acumulado:v('leads-lp-acum'),   d1:v('leads-lp-d1')},
   ];
 
-  // Leads qualificados por meio (acumulado + D-1)
   const leadsFonte = [
     {fonte:'TikTok Dr. Elias', meta:16, realizado:v('lq-tte-real'),    d1:v('lq-tte-d1')},
     {fonte:'TikTok Dr. Pabla', meta:16, realizado:v('lq-ttp-real'),    d1:v('lq-ttp-d1')},
@@ -485,6 +483,7 @@ function collectMarketing() {
   };
 }
 
+// ── COLETAR COMERCIAL ──
 function collectComercial() {
   return {
     equipe: [
@@ -495,4 +494,10 @@ function collectComercial() {
       {responsavel:'Graciele', contatoEfetivo:v('doc-gra-cont-mes'), docFin:v('doc-gra-doc-mes'), analises:v('doc-gra-anal-mes'), contatoD1:v('doc-gra-cont'), docD1:v('doc-gra-doc'), analisesD1:v('doc-gra-anal')},
       {responsavel:'Marielle', contatoEfetivo:v('doc-mar-cont-mes'), docFin:v('doc-mar-doc-mes'), analises:v('doc-mar-anal-mes'), contatoD1:v('doc-mar-cont'), docD1:v('doc-mar-doc'), analisesD1:v('doc-mar-anal')},
     ],
-    oportunidadesMeta: 27,
+    oportunidadesMeta: 27, oportunidadesReal: v('opc-real'), oportunidadesD1: v('opc-d1'),
+    contratosMeta: 16,     contratosReal: v('con-real'),     contratosD1: v('con-d1'),
+  };
+}
+
+// ── COLETAR JURÍDICO ──
+function colle
