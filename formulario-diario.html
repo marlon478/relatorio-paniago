@@ -500,4 +500,114 @@ function collectComercial() {
 }
 
 // ── COLETAR JURÍDICO ──
-function colle
+function collectJuridico() {
+  function comp(resp, pfx) {
+    return {
+      resp,
+      emAtraso:  v(pfx + '-atras'),
+      cumpridos: v(pfx + '-cump'),
+      doDia:     v(pfx + '-dia'),
+      naAgenda:  v(pfx + '-agenda'),
+    };
+  }
+  return {
+    processosJud: v('jur-proc-jud'),
+    processosAdm: v('jur-proc-adm'),
+    movAdmPub: v('mov-adm-pub'),
+    movAdmMov: v('mov-adm-mov'),
+    movJudPub: v('mov-jud-pub'),
+    movJudMov: v('mov-jud-mov'),
+    compromissos: [
+      comp('Elias e Marlon', 'jc-em'),
+      comp('Pabla',          'jc-pb'),
+      comp('Thamyres',       'jc-th'),
+      comp('Debora',         'jc-db'),
+      comp('Vinicius',       'jc-vi'),
+      comp('Leticia',        'jc-le'),
+      comp('Graciele',       'jc-gr'),
+      comp('Comercial',      'jc-co'),
+      comp('Secretaria',     'jc-sc'),
+    ],
+  };
+}
+
+// -- SALVAR --
+async function saveSection() {
+  const btn = document.getElementById('btn-save');
+  const date = document.getElementById('report-date').value;
+  if (!date) { showToast('Selecione uma data!', 'r'); return; }
+  let payload = { date, area: currentTab };
+  if (currentTab === 'mkt') payload.marketing = collectMarketing();
+  if (currentTab === 'com') payload.comercial  = collectComercial();
+  if (currentTab === 'jur') payload.juridico   = collectJuridico();
+  savedSections[currentTab] = payload;
+  try { localStorage.setItem('formulario_draft_' + date, JSON.stringify(savedSections)); } catch(e) {}
+  btn.disabled = true; btn.textContent = 'Salvando...';
+  document.getElementById('status-msg').textContent = 'Enviando dados...';
+  try {
+    await fetch(APPS_SCRIPT_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+    showToast('Secao salva!', 'g');
+    document.getElementById('status-msg').textContent = 'Salvo em ' + new Date().toLocaleTimeString('pt-BR');
+  } catch(e) {
+    showToast('Erro ao salvar.', 'r');
+    document.getElementById('status-msg').textContent = 'Erro ao salvar.';
+  } finally { btn.disabled = false; btn.textContent = 'Salvar Secao'; }
+}
+
+function clearSection() {
+  if (!confirm('Limpar campos desta secao?')) return;
+  document.querySelectorAll('#tab-' + currentTab + ' input').forEach(i => { i.value = 0; });
+  showToast('Secao limpa.', '');
+}
+
+function exportJSON() {
+  const date = document.getElementById('report-date').value || 'sem-data';
+  const all = { date, marketing:collectMarketing(), comercial:collectComercial(), juridico:collectJuridico() };
+  const blob = new Blob([JSON.stringify(all, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'relatorio-' + date + '.json';
+  a.click();
+}
+
+function loadDraft() {
+  const date = document.getElementById('report-date').value;
+  if (!date) return;
+  try {
+    const stored = localStorage.getItem('formulario_draft_' + date);
+    if (!stored) return;
+    savedSections = JSON.parse(stored);
+    if (savedSections.mkt && savedSections.mkt.marketing) applyMarketing(savedSections.mkt.marketing);
+    if (savedSections.com && savedSections.com.comercial) applyComercial(savedSections.com.comercial);
+    if (savedSections.jur && savedSections.jur.juridico)  applyJuridico(savedSections.jur.juridico);
+  } catch(e) {}
+}
+
+function applyMarketing(d) {
+  if (!d) return;
+  const rsMap = {'Facebook Mendes':'fbm','Facebook Elias':'fbe','Facebook Pabla':'fbp','Instagram Mendes':'igm','Instagram Elias':'ige','Instagram Pabla':'igp','TT Pabla':'ttp','TT Elias':'tte','TT Mendes Paniago':'ttm','LinkedIn Mendes':'lim','YouTube':'yt'};
+  (d.redesSociais||[]).forEach(r => { const k=rsMap[r.rede]; if(!k) return; set('rs-'+k+'-fr',r.feedReal); set('rs-'+k+'-fd1',r.feedD1); set('rs-'+k+'-sr',r.storiesReal); set('rs-'+k+'-sd1',r.storiesD1); });
+  set('seg-real', d.seguidoresReal);
+  (d.seguidoresPorRede||[]).forEach(r => { const k={Instagram:'ig',TikTok:'tt',Facebook:'fb',YouTube:'yt',LinkedIn:'li',Outros:'outros'}[r.rede]; if(k) set('seg-'+k+'-d1',r.d1); });
+  (d.leadsCanal||[]).forEach(r => { const k={Instagram:'ig',TikTok:'tt',Google:'gg',Facebook:'fb',WhatsApp:'wa','Indicacao':'ind','Organico':'org',Site:'site','Landing Page':'lp'}[r.canal]; if(k) { set('leads-'+k+'-acum',r.acumulado); set('leads-'+k+'-d1',r.d1); } });
+  (d.leadsFonte||[]).forEach(r => { const k={'TikTok Dr. Elias':'tte','TikTok Dr. Pabla':'ttp',Instagram:'ig','Google Ads':'gg','Meta Ads':'meta','Landing Page':'lp',WhatsApp:'wa','Indicacao':'ind','Organico':'org','Outros Meios':'outros'}[r.fonte]; if(k) { set('lq-'+k+'-real',r.realizado); set('lq-'+k+'-d1',r.d1); } });
+  (d.trafego||[]).forEach(r => { const k={Google:'gg',Meta:'mt',TikTok:'tt',LinkedIn:'li'}[r.canal]; if(k) { set('tr-'+k+'-custo',r.custoMes); set('tr-'+k+'-cli',r.cliques); set('tr-'+k+'-cpc',r.cpc); set('tr-'+k+'-leads',r.leads); set('tr-'+k+'-cpl',r.cpl); } });
+}
+function applyComercial(d) {
+  if (!d) return;
+  (d.equipe||[]).forEach(p => { const k={Patricia:'pat',Marielle:'mar'}[p.nome]; if(!k) return; set('com-'+k+'-tent-mes',p.tentTotal); set('com-'+k+'-efet-mes',p.efetTotal); set('com-'+k+'-fac-mes',p.fac); set('com-'+k+'-tent',p.tentD1); set('com-'+k+'-efet',p.efetD1); set('com-'+k+'-fac',p.facD1); });
+  (d.documentacao||[]).forEach(r => { const k={Graciele:'gra',Marielle:'mar'}[r.responsavel]; if(!k) return; set('doc-'+k+'-cont-mes',r.contatoEfetivo); set('doc-'+k+'-doc-mes',r.docFin); set('doc-'+k+'-anal-mes',r.analises); set('doc-'+k+'-cont',r.contatoD1); set('doc-'+k+'-doc',r.docD1); set('doc-'+k+'-anal',r.analisesD1); });
+  set('opc-real',d.oportunidadesReal); set('opc-d1',d.oportunidadesD1); set('con-real',d.contratosReal); set('con-d1',d.contratosD1);
+}
+function applyJuridico(d) {
+  if (!d) return;
+  set('jur-proc-jud',d.processosJud); set('jur-proc-adm',d.processosAdm);
+  set('mov-adm-pub',d.movAdmPub); set('mov-adm-mov',d.movAdmMov); set('mov-jud-pub',d.movJudPub); set('mov-jud-mov',d.movJudMov);
+  const pfxMap={'Elias e Marlon':'em',Pabla:'pb',Thamyres:'th',Debora:'db',Vinicius:'vi',Leticia:'le',Graciele:'gr',Comercial:'co',Secretaria:'sc'};
+  (d.compromissos||[]).forEach(c => { const k=pfxMap[c.resp]; if(!k) return; set('jc-'+k+'-atras',c.emAtraso); set('jc-'+k+'-cump',c.cumpridos); set('jc-'+k+'-dia',c.doDia); set('jc-'+k+'-agenda',c.naAgenda); });
+}
+function set(id, val) { const el=document.getElementById(id); if(el && val!==undefined && val!==null) el.value=val; }
+function showToast(msg, type) { const t=document.getElementById('toast'); t.textContent=msg; t.className='toast show'+(type?' '+type:''); setTimeout(()=>{t.className='toast';},3000); }
+</script>
+</body>
+</html>
