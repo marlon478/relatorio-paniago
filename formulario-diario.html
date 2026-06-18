@@ -535,7 +535,8 @@ async function saveSection() {
   btn.disabled = true; btn.textContent = 'Salvando...';
   document.getElementById('status-msg').textContent = 'Enviando dados...';
   try {
-    await fetch(APPS_SCRIPT_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'}, body:JSON.stringify(payload) });
+    const encodedPayload = encodeURIComponent(JSON.stringify(payload));
+    await fetch(APPS_SCRIPT_URL + '?payload=' + encodedPayload, { method:'GET', mode:'no-cors' });
     showToast('Secao salva!', 'g');
     document.getElementById('status-msg').textContent = 'Salvo em ' + new Date().toLocaleTimeString('pt-BR');
   } catch(e) {
