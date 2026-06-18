@@ -347,7 +347,7 @@ body{background:var(--navy);color:var(--cream);font-family:'Segoe UI',Arial,sans
 
 <script>
 // ── CONFIGURAÇÃO ──
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxtA6gMlM2zhvqCjQwP3phde30U2NmUMdcM-mUoBtrpAY0pwIl6FaHgUd2kXd6g1e5KVw/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyNkvlpakvg34yivcOGx_ccVNCOaQcVL1Ml2xiB5Yl0/exec';
 
 // ── ESTADO ──
 let currentTab = 'mkt';
@@ -535,7 +535,7 @@ async function saveSection() {
   btn.disabled = true; btn.textContent = 'Salvando...';
   document.getElementById('status-msg').textContent = 'Enviando dados...';
   try {
-    await fetch(APPS_SCRIPT_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+    await fetch(APPS_SCRIPT_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'}, body:JSON.stringify(payload) });
     showToast('Secao salva!', 'g');
     document.getElementById('status-msg').textContent = 'Salvo em ' + new Date().toLocaleTimeString('pt-BR');
   } catch(e) {
