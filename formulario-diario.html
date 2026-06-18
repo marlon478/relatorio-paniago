@@ -347,7 +347,8 @@ body{background:var(--navy);color:var(--cream);font-family:'Segoe UI',Arial,sans
 
 <script>
 // ── CONFIGURAÇÃO ──
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxtA6gMlM2zhvqCjQwP3phde30U2NmUMdcM-mUoBtrpAY0pwIl6FaHgUd2kXd6g1e5KVw/exec';
+const SUPABASE_URL = 'https://ikhagxhavqcbuxrvahmv.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_3BWQS8bpUZ8hpPFNG1iCzQ_nPIUa-Pl';
 
 // ── ESTADO ──
 let currentTab = 'mkt';
@@ -535,12 +536,32 @@ async function saveSection() {
   btn.disabled = true; btn.textContent = 'Salvando...';
   document.getElementById('status-msg').textContent = 'Enviando dados...';
   try {
-    const encodedPayload = encodeURIComponent(JSON.stringify(payload));
-    await fetch(APPS_SCRIPT_URL + '?payload=' + encodedPayload, { method:'GET', mode:'no-cors' });
+    const tableMap = { mkt: 'marketing', com: 'comercial', jur: 'juridico' };
+    const dataMap  = { mkt: 'marketing', com: 'comercial', jur: 'juridico' };
+    const table  = tableMap[currentTab];
+    const record = { date, data: payload[dataMap[currentTab]] };
+
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Prefer': 'resolution=merge-duplicates'
+      },
+      body: JSON.stringify(record)
+    });
+
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`HTTP ${res.status}: ${errText}`);
+    }
+
     showToast('Secao salva!', 'g');
     document.getElementById('status-msg').textContent = 'Salvo em ' + new Date().toLocaleTimeString('pt-BR');
   } catch(e) {
-    showToast('Erro ao salvar.', 'r');
+    console.error('Erro Supabase:', e);
+    showToast('Erro ao salvar: ' + e.message, 'r');
     document.getElementById('status-msg').textContent = 'Erro ao salvar.';
   } finally { btn.disabled = false; btn.textContent = 'Salvar Secao'; }
 }
