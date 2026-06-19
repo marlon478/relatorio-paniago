@@ -90,6 +90,20 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(1);opacity:.5}
 
 .month-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;background:var(--gold2);border:1px solid rgba(201,168,76,.3);color:var(--gold);border-radius:5px;padding:2px 8px;margin-left:8px;font-weight:700;vertical-align:middle}
 .empty{background:var(--navy2);border:1px dashed var(--border);border-radius:10px;padding:40px;text-align:center;color:var(--cream2);font-size:13px;margin:10px 0}
+.funil-box{background:var(--navy2);border:1px solid var(--border);border-radius:10px;padding:18px 22px;margin-bottom:4px}
+.funil-bars{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:14px}
+.funil-bar-label{display:flex;justify-content:space-between;margin-bottom:6px}
+.funil-bar-label span:first-child{font-size:10px;font-weight:700;color:var(--cream2);text-transform:uppercase;letter-spacing:.5px}
+.funil-bar-label span:last-child{font-size:11px;font-weight:700;color:var(--gold)}
+.funil-track{background:rgba(255,255,255,.08);border-radius:6px;height:10px;overflow:hidden}
+.funil-fill{height:100%;border-radius:6px;background:var(--gold);transition:width .5s}
+.funil-pct{font-size:11px;color:var(--gold);margin-top:4px}
+.funil-proj{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:10px 18px;display:flex;align-items:center;gap:10px}
+.funil-proj-title{font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;flex:1}
+.funil-proj-val{text-align:center;padding:0 20px;border-left:1px solid var(--border)}
+.funil-proj-val .fpn{font-size:24px;font-weight:800;color:var(--cream)}
+.funil-proj-val .fpl{font-size:9px;font-weight:700;color:var(--cream2);text-transform:uppercase;letter-spacing:.7px;margin-top:2px}
+@media(max-width:700px){.funil-bars{grid-template-columns:1fr}}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:700px){.g2,.charts-row{grid-template-columns:1fr}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
@@ -201,6 +215,11 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(1);opacity:.5}
     <div class="cards" id="cards-com-d1"></div>
     <p class="st">&#128197; Acumulado do Mês</p>
     <div class="cards" id="cards-com-mes"></div>
+    <p class="st">&#127919; Funil de Vendas &#8212; Oportunidades vs Contratos</p>
+    <div class="funil-box">
+      <div class="funil-bars" id="funil-bars"></div>
+      <div class="funil-proj" id="funil-proj"></div>
+    </div>
     <p class="st">&#128222; Equipe Comercial D-1</p>
     <div class="tbl-wrap"><table class="tbl">
       <thead><tr><th>Pessoa</th><th>Tentativas</th><th>Efetivas</th><th>FAC</th><th>Taxa %</th></tr></thead>
@@ -224,6 +243,12 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(1);opacity:.5}
     </div>
     <p class="st">&#128200; Tendência &#8212; Contratos D-1</p>
     <div class="chart-box full"><canvas id="ch-com-ct" height="140"></canvas></div>
+    <p class="st">&#128202; Comercial &#8212; Gráficos</p>
+    <div class="charts-row">
+      <div class="chart-box tall"><div class="chart-title">Tentativas vs. Efetivas por Pessoa (Mês)</div><canvas id="ch-com-tent-ef"></canvas></div>
+      <div class="chart-box tall"><div class="chart-title">Taxa de Efetividade % (Mês) — Meta: 40%</div><canvas id="ch-com-taxa"></canvas></div>
+      <div class="chart-box full tall"><div class="chart-title">Documentação por Responsável (Mês)</div><canvas id="ch-com-doc"></canvas></div>
+    </div>
   </div>
 </div>
 
@@ -507,6 +532,7 @@ function renderCom(c,pc,dt){
     {l:'Efetivas D-1',      v:N(te)},
     {l:'Taxa Efetiva D-1',  v:P(tx), cls:tx<30&&tx>0?'alert-y':''},
   ].map(c2=>`<div class="card ${c2.cls||''}"><div class="card-label">${c2.l}</div><div class="card-val">${c2.v}</div></div>`).join('');
+  renderFunil(dt);
   document.getElementById('cards-com-mes').innerHTML=[
     {l:'Oportunidades M\u00eas', v:N(mAcc.oportunidades)},
     {l:'Contratos M\u00eas',     v:N(mAcc.contratos)},
@@ -609,6 +635,94 @@ function mkLine2(id,labels,ds){
     }
   }});
 }
+const METAS={opt:27,ct:16}; // ← ajuste as metas mensais aqui
+
+function renderFunil(dt){
+  const yr=dt.getFullYear(),mo=dt.getMonth();
+  const mAcc=sumCom(yr,mo);
+  const pOpt=Math.min(mAcc.oportunidades/METAS.opt*100,100);
+  const pCt =Math.min(mAcc.contratos   /METAS.ct *100,100);
+  const daysInMonth=new Date(yr,mo+1,0).getDate();
+  const daysData=Math.max(1,monthRecs(yr,mo).length);
+  const projOpt=Math.round(mAcc.oportunidades/daysData*daysInMonth);
+  const projCt =Math.round(mAcc.contratos   /daysData*daysInMonth);
+  const bar=(label,meta,real,pct)=>`
+    <div>
+      <div class="funil-bar-label"><span>${label}</span><span>Meta ${meta} · Realiz. ${real}</span></div>
+      <div class="funil-track"><div class="funil-fill" style="width:${pct.toFixed(1)}%"></div></div>
+      <div class="funil-pct">${pct.toFixed(1)}% atingido</div>
+    </div>`;
+  const fb=document.getElementById('funil-bars');
+  if(fb)fb.innerHTML=bar('Oportunidade',METAS.opt,mAcc.oportunidades,pOpt)+bar('Contrato',METAS.ct,mAcc.contratos,pCt);
+  const fp=document.getElementById('funil-proj');
+  if(fp)fp.innerHTML=`<span style="font-size:16px">&#127919;</span>
+    <div class="funil-proj-title">Projeção Final do Mês</div>
+    <div class="funil-proj-val"><div class="fpn">${projOpt}</div><div class="fpl">Oportunidades</div></div>
+    <div class="funil-proj-val"><div class="fpn" style="color:var(--gold)">${projCt}</div><div class="fpl">Contratos</div></div>`;
+}
+
+function renderComCharts(){
+  const dt=new Date(selDate+'T12:00:00Z');
+  const yr=dt.getFullYear(),mo=dt.getMonth();
+  const mRecs=monthRecs(yr,mo);
+  const eqMap={},docMap={};
+  mRecs.forEach(d=>{
+    const com=appData[d]?.com;if(!com)return;
+    (com.equipe||[]).forEach(e=>{
+      if(!eqMap[e.nome])eqMap[e.nome]={tent:0,efet:0,fac:0};
+      eqMap[e.nome].tent+=e.tentD1||0;eqMap[e.nome].efet+=e.efetD1||0;eqMap[e.nome].fac+=e.facD1||0;
+    });
+    (com.documentacao||[]).forEach(dc=>{
+      if(!docMap[dc.responsavel])docMap[dc.responsavel]={cont:0,doc:0,anal:0};
+      docMap[dc.responsavel].cont+=dc.contatoD1||0;docMap[dc.responsavel].doc+=dc.docD1||0;docMap[dc.responsavel].anal+=dc.analisesD1||0;
+    });
+  });
+  const eqP=Object.keys(eqMap),docP=Object.keys(docMap);
+  const legOpts={display:true,labels:{color:'#a8b8cc',font:{size:10},boxWidth:12,padding:8}};
+  const scOpts=(yFmt)=>({
+    x:{ticks:{color:'#a8b8cc',font:{size:10}},grid:{color:'rgba(255,255,255,.05)'}},
+    y:{ticks:{color:'#a8b8cc',font:{size:10},...(yFmt?{callback:yFmt}:{})},grid:{color:'rgba(255,255,255,.08)'},beginAtZero:true}
+  });
+  // 1. Tentativas vs Efetivas vs FAC
+  const c1=document.getElementById('ch-com-tent-ef');if(c1){
+    if(charts['ch-com-tent-ef']){charts['ch-com-tent-ef'].destroy();delete charts['ch-com-tent-ef'];}
+    charts['ch-com-tent-ef']=new Chart(c1,{type:'bar',
+      data:{labels:eqP,datasets:[
+        {label:'Tentativas',   data:eqP.map(p=>eqMap[p].tent),backgroundColor:'#3b82f6',borderRadius:4},
+        {label:'Efetivas',     data:eqP.map(p=>eqMap[p].efet),backgroundColor:'#4ade80',borderRadius:4},
+        {label:'FAC Realizadas',data:eqP.map(p=>eqMap[p].fac), backgroundColor:'#f97316',borderRadius:4},
+      ]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legOpts},scales:scOpts()}
+    });
+  }
+  // 2. Taxa de Efetividade + linha meta 40%
+  const taxas=eqP.map(p=>eqMap[p].tent>0?eqMap[p].efet/eqMap[p].tent*100:0);
+  const tColors=taxas.map(t=>t>=40?'#4ade80':t>=30?'#fbbf24':'#f87171');
+  const c2=document.getElementById('ch-com-taxa');if(c2){
+    if(charts['ch-com-taxa']){charts['ch-com-taxa'].destroy();delete charts['ch-com-taxa'];}
+    charts['ch-com-taxa']=new Chart(c2,{type:'bar',
+      data:{labels:eqP,datasets:[
+        {label:'Taxa (%)',data:taxas,backgroundColor:tColors,borderRadius:4,order:2},
+        {label:'Meta 40%',data:eqP.map(()=>40),type:'line',borderColor:'rgba(255,255,255,.5)',borderDash:[6,4],borderWidth:1.5,pointRadius:0,fill:false,order:1},
+      ]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legOpts},
+        scales:{...scOpts(v=>v+'%'),y:{...scOpts().y,max:100,ticks:{color:'#a8b8cc',font:{size:10},callback:v=>v+'%'}}}}
+    });
+  }
+  // 3. Documentação por responsável
+  const c3=document.getElementById('ch-com-doc');if(c3){
+    if(charts['ch-com-doc']){charts['ch-com-doc'].destroy();delete charts['ch-com-doc'];}
+    charts['ch-com-doc']=new Chart(c3,{type:'bar',
+      data:{labels:docP,datasets:[
+        {label:'Contato Efetivo',      data:docP.map(p=>docMap[p].cont),backgroundColor:'#3b82f6',borderRadius:4},
+        {label:'Documentos Entregues', data:docP.map(p=>docMap[p].doc), backgroundColor:'#4ade80',borderRadius:4},
+        {label:'Análise de Documentos',data:docP.map(p=>docMap[p].anal),backgroundColor:'#f97316',borderRadius:4},
+      ]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legOpts},scales:scOpts()}
+    });
+  }
+}
+
 function renderMktCharts(){
   const m=appData[selDate]?.mkt;if(!m)return;
   const dt=new Date(selDate+'T12:00:00Z');
@@ -671,7 +785,7 @@ function switchTab(id){
   document.getElementById('btn-'+id).classList.add('on');
   // Renderiza gr\u00e1ficos da aba ao torn\u00e1-la vis\u00edvel
   if(id==='mkt'){mkChart('ch-mkt-lq',last7(d=>appData[d]?.mkt?.leadsQualD1??null));renderMktCharts();}
-  if(id==='com') mkChart('ch-com-ct', last7(d=>appData[d]?.com?.contratosD1??null),'#4ade80');
+  if(id==='com'){mkChart('ch-com-ct',last7(d=>appData[d]?.com?.contratosD1??null),'#4ade80');renderComCharts();}
   if(id==='jur') mkChart('ch-jur-atr', last7(atrFn),'#f87171');
 }
 
