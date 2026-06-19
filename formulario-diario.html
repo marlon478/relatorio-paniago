@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FormulÃ¡rio DiÃ¡rio â Mendes Paniago</title>
+<title>Formulário Diário — Mendes Paniago</title>
 <style>
 :root {
   --navy:#0f2640; --navy2:#162f4f; --navy3:#1e3d60;
@@ -91,8 +91,8 @@ body{background:var(--navy);color:var(--cream);font-family:'Segoe UI',Arial,sans
     <text x="8" y="31" font-family="'Segoe UI',Arial" font-size="11" font-weight="800" letter-spacing="2.5" fill="#c9a84c">PANIAGO</text>
   </svg>
   <div class="hdr-info">
-    <div class="t">RelatÃ³rio DiÃ¡rio</div>
-    <div class="s">Dados de D-1 Â· Supabase</div>
+    <div class="t">Relatório Diário</div>
+    <div class="s">Dados de D-1 · Supabase</div>
   </div>
   <div class="sp"></div>
   <div class="pills">
@@ -107,22 +107,22 @@ body{background:var(--navy);color:var(--cream);font-family:'Segoe UI',Arial,sans
 </header>
 
 <nav class="tnav">
-  <button class="tb on" id="btn-mkt" onclick="switchTab('mkt')">ð£ Marketing</button>
-  <button class="tb" id="btn-com" onclick="switchTab('com')">ð¼ Comercial</button>
-  <button class="tb" id="btn-jur" onclick="switchTab('jur')">âï¸ JurÃ­dico</button>
+  <button class="tb on" id="btn-mkt" onclick="switchTab('mkt')">📣 Marketing</button>
+  <button class="tb" id="btn-com" onclick="switchTab('com')">💼 Comercial</button>
+  <button class="tb" id="btn-jur" onclick="switchTab('jur')">⚖️ Jurídico</button>
 </nav>
 
-<!-- âââââââââââ MARKETING âââââââââââ -->
+<!-- ═══════════ MARKETING ═══════════ -->
 <div id="pane-mkt" class="pane on">
   <div class="info" id="info-box"></div>
 
-  <p class="st">ð Geral D-1</p>
+  <p class="st">📊 Geral D-1</p>
   <div class="g g2">
     <div class="f"><label>Leads Qualificados D-1</label><input type="number" id="m-lqd1" min="0" value="0"></div>
     <div class="f"><label>Seguidores (snapshot)</label><input type="number" id="m-seg" min="0" value="0"></div>
   </div>
 
-  <p class="st">ð° TrÃ¡fego Pago D-1</p>
+  <p class="st">💰 Tráfego Pago D-1</p>
   <table class="tbl">
     <thead>
       <tr>
@@ -160,7 +160,7 @@ body{background:var(--navy);color:var(--cream);font-family:'Segoe UI',Arial,sans
     </tbody>
   </table>
 
-  <p class="st">ð¯ Leads por Canal D-1</p>
+  <p class="st">🎯 Leads por Canal D-1</p>
   <table class="tbl">
     <thead>
       <tr><th>Canal</th><th>Leads D-1</th></tr>
@@ -171,12 +171,12 @@ body{background:var(--navy);color:var(--cream);font-family:'Segoe UI',Arial,sans
       <tr><td class="rl">Instagram</td><td><input type="number" id="lc-ig-d1" min="0" value="0"></td></tr>
       <tr><td class="rl">Facebook</td><td><input type="number" id="lc-fb-d1" min="0" value="0"></td></tr>
       <tr><td class="rl">Google</td><td><input type="number" id="lc-gg-d1" min="0" value="0"></td></tr>
-      <tr><td class="rl">IndicaÃ§Ã£o</td><td><input type="number" id="lc-ind-d1" min="0" value="0"></td></tr>
+      <tr><td class="rl">Indicação</td><td><input type="number" id="lc-ind-d1" min="0" value="0"></td></tr>
       <tr><td class="rl">Outros Meios</td><td><input type="number" id="lc-out-d1" min="0" value="0"></td></tr>
     </tbody>
   </table>
 
-  <p class="st">â Leads Qualificados por Canal D-1</p>
+  <p class="st">✅ Leads Qualificados por Canal D-1</p>
   <table class="tbl">
     <thead>
       <tr><th>Canal</th><th>Leads Qual. D-1</th></tr>
@@ -185,14 +185,14 @@ body{background:var(--navy);color:var(--cream);font-family:'Segoe UI',Arial,sans
       <tr><td class="rl">TikTok Dr. Pabla</td><td><input type="number" id="lq-ttp-d1" min="0" value="0"></td></tr>
       <tr><td class="rl">TikTok Dr. Elias</td><td><input type="number" id="lq-tte-d1" min="0" value="0"></td></tr>
       <tr><td class="rl">Instagram</td><td><input type="number" id="lq-ig-d1" min="0" value="0"></td></tr>
-      <tr><td class="rl">Facebook</td><td><input type="number" id="lq-fb-d1" min="0" value="0"></td></tr>
+      <tr><td class="rl">Facebook</td><td><input type="number" id="lq-fb-d1" min="0" value="0"></div>
       <tr><td class="rl">Google</td><td><input type="number" id="lq-gg-d1" min="0" value="0"></td></tr>
-      <tr><td class="rl">IndicaÃ§Ã£o</td><td><input type="number" id="lq-ind-d1" min="0" value="0"></td></tr>
+      <tr><td class="rl">Indicação </td><td><input type="number" id="lq-ind-d1" min="0" value="0"></td></tr>
       <tr><td class="rl">Outros Meios</td><td><input type="number" id="lq-out-d1" min="0" value="0"></td></tr>
     </tbody>
   </table>
 
-  <p class="st">ð± Redes Sociais D-1</p>
+  <p class="st">📱 Redes Sociais D-1</p>
   <table class="tbl">
     <thead>
       <tr><th>Perfil</th><th>Postagem D-1</th><th>Stories D-1</th></tr>
@@ -213,16 +213,16 @@ body{background:var(--navy);color:var(--cream);font-family:'Segoe UI',Arial,sans
   </table>
 </div>
 
-<!-- âââââââââââ COMERCIAL âââââââââââ -->
+<!-- ═══════════ COMERCIAL ═══════════ -->
 <div id="pane-com" class="pane">
 
-  <p class="st">ð¯ Oportunidades & Contratos D-1</p>
+  <p class="st">🎯 Oportunidades & Contratos D-1</p>
   <div class="g g2">
     <div class="f"><label>Oportunidades D-1</label><input type="number" id="c-opd1" min="0" value="0"></div>
     <div class="f"><label>Contratos D-1</label><input type="number" id="c-ctd1" min="0" value="0"></div>
   </div>
 
-  <p class="st">ð Equipe Comercial D-1</p>
+  <p class="st">📞 Equipe Comercial D-1</p>
   <table class="tbl">
     <thead>
       <tr><th>Pessoa</th><th>Tentativas D-1</th><th>Efetivas D-1</th><th>FAC D-1</th></tr>
@@ -243,10 +243,10 @@ body{background:var(--navy);color:var(--cream);font-family:'Segoe UI',Arial,sans
     </tbody>
   </table>
 
-  <p class="st">ð DocumentaÃ§Ã£o D-1 â Administrativo</p>
+  <p class="st">📄 Documentação D-1 — Administrativo</p>
   <table class="tbl">
     <thead>
-      <tr><th>ResponsÃ¡vel</th><th>Contato D-1</th><th>Doc.Fin. D-1</th><th>AnÃ¡lises D-1</th><th>Propostas D-1</th></tr>
+      <tr><th>Responsável</th><th>Contato D-1</th><th>Doc.Fin. D-1</th><th>Análises D-1</th><th>Propostas D-1</th></tr>
     </thead>
     <tbody>
       <tr>
@@ -266,10 +266,10 @@ body{background:var(--navy);color:var(--cream);font-family:'Segoe UI',Arial,sans
     </tbody>
   </table>
 
-  <p class="st">âï¸ AnÃ¡lises & Propostas D-1 â Dra. Pabla & Dr. Elias</p>
+  <p class="st">⚖️ Análises & Propostas D-1 — Dra. Pabla & Dr. Elias</p>
   <table class="tbl">
     <thead>
-      <tr><th>ResponsÃ¡vel</th><th>AnÃ¡lises D-1</th><th>Propostas D-1</th></tr>
+      <tr><th>Responsável</th><th>Análises D-1</th><th>Propostas D-1</th></tr>
     </thead>
     <tbody>
       <tr>
@@ -286,39 +286,39 @@ body{background:var(--navy);color:var(--cream);font-family:'Segoe UI',Arial,sans
   </table>
 </div>
 
-<!-- âââââââââââ JURÃDICO âââââââââââ -->
+<!-- ═══════════ JURÍDICO ═══════════ -->
 <div id="pane-jur" class="pane">
 
-  <p class="st">âï¸ Processos (snapshot)</p>
+  <p class="st">⚖️ Processos (snapshot)</p>
   <div class="g g3">
     <div class="f"><label>Processos Judiciais Ativos</label><input type="number" id="j-pjud" min="0" value="0"></div>
     <div class="f"><label>Processos Adm. Ativos</label><input type="number" id="j-padm" min="0" value="0"></div>
-    <div class="f"><label>MovimentaÃ§Ãµes Total D-1</label><input type="number" id="j-movd1" min="0" value="0"></div>
+    <div class="f"><label>Movimentações Total D-1</label><input type="number" id="j-movd1" min="0" value="0"></div>
   </div>
 
-  <p class="st">ð MovimentaÃ§Ã£o Judicial D-1</p>
+  <p class="st">📋 Movimentação Judicial D-1</p>
   <div class="g" style="grid-template-columns:repeat(5,1fr)">
-    <div class="f"><label>PublicaÃ§Ãµes</label><input type="number" id="mj-pub" min="0" value="0"></div>
+    <div class="f"><label>Publicações</label><input type="number" id="mj-pub" min="0" value="0"></div>
     <div class="f"><label>Movimento</label><input type="number" id="mj-mov" min="0" value="0"></div>
     <div class="f"><label>Pend. Ajuiz.</label><input type="number" id="mj-paj" min="0" value="0"></div>
     <div class="f"><label>Ajuizados D-1</label><input type="number" id="mj-ajz" min="0" value="0"></div>
     <div class="f"><label>Ativos (snapshot)</label><input type="number" id="mj-ati" min="0" value="0"></div>
   </div>
 
-  <p class="st">ð MovimentaÃ§Ã£o Administrativa D-1</p>
+  <p class="st">📋 Movimentação Administrativa D-1</p>
   <div class="g" style="grid-template-columns:repeat(5,1fr)">
-    <div class="f"><label>PublicaÃ§Ãµes</label><input type="number" id="ma-pub" min="0" value="0"></div>
+    <div class="f"><label>Publicações</label><input type="number" id="ma-pub" min="0" value="0"></div>
     <div class="f"><label>Movimento</label><input type="number" id="ma-mov" min="0" value="0"></div>
     <div class="f"><label>Pend. Ajuiz.</label><input type="number" id="ma-paj" min="0" value="0"></div>
     <div class="f"><label>Ajuizados D-1</label><input type="number" id="ma-ajz" min="0" value="0"></div>
     <div class="f"><label>Ativos (snapshot)</label><input type="number" id="ma-ati" min="0" value="0"></div>
   </div>
 
-  <p class="st">â Compromissos por ResponsÃ¡vel</p>
+  <p class="st">✅ Compromissos por Responsável</p>
   <table class="tbl">
     <thead>
       <tr>
-        <th>ResponsÃ¡vel</th>
+        <th>Responsável</th>
         <th>Atrasados</th>
         <th>Cumpridos D-1</th>
         <th>Comp. do Dia</th>
@@ -334,8 +334,8 @@ body{background:var(--navy);color:var(--cream);font-family:'Segoe UI',Arial,sans
 <footer class="footer">
   <div class="finfo" id="finfo">Carregando...</div>
   <div class="btns">
-    <button class="btn btn-o" onclick="loadYesterday()">ð¥ Carregar Ontem</button>
-    <button class="btn btn-p" id="btn-save" onclick="saveSection()">ð¾ Salvar SeÃ§Ã£o</button>
+    <button class="btn btn-o" onclick="loadYesterday()">📥 Carregar Ontem</button>
+    <button class="btn btn-p" id="btn-save" onclick="saveSection()">💾 Salvar Seção</button>
   </div>
 </footer>
 
@@ -352,7 +352,7 @@ const JUR_RESP = [
 
 function jid(resp) {
   return resp.toLowerCase()
-    .normalize('NFD').replace(/[Ì-Í¯]/g,'')
+    .normalize('NFD').replace(/[̀-ͯ]/g,'')
     .replace(/\s+/g,'').replace(/[^a-z]/g,'');
 }
 
@@ -454,7 +454,7 @@ async function loadYesterday() {
   setLoad(true);
   try {
     const [mkt, com, jur] = await Promise.all([
-      fetchRow(marketing', yesterday),
+      fetchRow('marketing', yesterday),
       fetchRow('comercial', yesterday),
       fetchRow('juridico',  yesterday)
     ]);
@@ -472,12 +472,12 @@ async function loadYesterday() {
 
 function onDateChange() { loadData(document.getElementById('rdate').value); }
 
-// ââ POPULATE ââââââââââââââââââââââââââââââââââââââââ
+// ── POPULATE ─────────────────────────────────────────
 function populateMkt(d) {
   set('m-lqd1', d.leadsQualD1);
   set('m-seg',  d.seguidoresD1);
 
-  const km = {Google:'gg', Meta:'mt',TikTok:'tt',LinkedIn:'li'};
+  const km = {Google:'gg',Meta:'mt',TikTok:'tt',LinkedIn:'li'};
   (d.trafego||[]).forEach(t => {
     const k = km[t.canal]; if (!k) return;
     set(`tr-${k}-cus`, t.custoD1);
@@ -485,7 +485,7 @@ function populateMkt(d) {
     set(`tr-${k}-cpl`, t.cplD1);
   });
 
-  const kl = {'TikTok Dr. Pabla':'ttp','TikTok Dr. Elias':'tte',Instagram:'ig',Facebook:'fb',Google:'gg','IndicaÃ§Ã£o':'ind','Outros Meios':'out'};
+  const kl = {'TikTok Dr. Pabla':'ttp','TikTok Dr. Elias':'tte',Instagram:'ig',Facebook:'fb',Google:'gg','Indicação':'ind','Outros Meios':'out'};
   (d.leadsCanal||[]).forEach(lc => {
     const k = kl[lc.fonte]; if (!k) return;
     set(`lc-${k}-d1`, lc.d1);
@@ -565,7 +565,7 @@ function populateJur(d) {
   });
 }
 
-// ââ BUILD JSON ââââââââââââââââââââââââââââââââââââââââ
+// ── BUILD JSON ────────────────────────────────────────
 function buildMkt() {
   return {
     leadsQualD1:  n('m-lqd1'),
@@ -582,7 +582,7 @@ function buildMkt() {
       {fonte:'Instagram',        d1:n('lc-ig-d1')},
       {fonte:'Facebook',         d1:n('lc-fb-d1')},
       {fonte:'Google',           d1:n('lc-gg-d1')},
-      {fonte:'IndicaÃ§Ã£o',        d1:n('lc-ind-d1')},
+      {fonte:'Indicação',        d1:n('lc-ind-d1')},
       {fonte:'Outros Meios',     d1:n('lc-out-d1')}
     ],
     leadsQualCanal: [
@@ -591,7 +591,7 @@ function buildMkt() {
       {fonte:'Instagram',        d1:n('lq-ig-d1')},
       {fonte:'Facebook',         d1:n('lq-fb-d1')},
       {fonte:'Google',           d1:n('lq-gg-d1')},
-      {fonte:'IndicaÃ§Ã£o',        d1:n('lq-ind-d1')},
+      {fonte:'Indicação',        d1:n('lq-ind-d1')},
       {fonte:'Outros Meios',     d1:n('lq-out-d1')}
     ],
     redesSociais: [
@@ -653,7 +653,7 @@ function buildJur() {
   };
 }
 
-// ââ SAVE âââââââââââââââââââââââââââââââââââââââââââââ
+// ── SAVE ─────────────────────────────────────────────
 async function saveSection() {
   const date = document.getElementById('rdate').value;
   if (!date) { showToast('Selecione uma data.', 'err'); return; }
@@ -681,27 +681,27 @@ async function saveSection() {
     if (!res.ok) throw new Error(Nawait res.text());
     saved[curTab] = true;
     updatePills();
-    const labels = {mkt:'Marketing',com:'Comercial',jur:'JurÃ­dico'};
-    showToast(`â ${labels[curTab]} salvo!`, 'ok');
+    const labels = {mkt:'Marketing',com:'Comercial',jur:'Jurídico'};
+    showToast(`✕ ${labels[curTab]} salvo!`, 'ok');
     updateFooter();
   } catch(e) {
-    showToast('â Erro: ' + e.message, 'err');
+    showToast('❌ Erro: ' + e.message, 'err');
   }
   btn.disabled = false;
 }
 
-// ââ UI ââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── UI ────────────────────────────────────────────────
 function updatePills() {
   ['mkt','com','jur'].forEach(k => {
     document.getElementById('pill-'+k).className = 'pill' + (saved[k] ? ' ok' : '');
   });
 }
 function updateFooter() {
-  const labels = {mkt:'Marketing',com:'Comercial',jur:'JurÃ­dico'};
+  const labels = {mkt:'Marketing',com:'Comercial',jur:'Jurídico'};
   const all = saved.mkt && saved.com && saved.jur;
   document.getElementById('finfo').innerHTML =
-    `SeÃ§Ã£o: <strong style="color:var(--gold)">${labels[curTab]}</strong>` +
-    (all ? ' &nbsp;Â·&nbsp; <span style="color:var(--green)">â Tudo salvo</span>' : '');
+    `Seção: <strong style="color:var(--gold)">${labels[curTab]}</strong>` +
+    (all ? ' &nbsp;·&nbsp; <span style="color:var(--green)">✓ Tudo salvo</span>' : '');
 }
 function clearForm() {
   document.querySelectorAll('input[type=number]').forEach(el => { el.value = 0; });
