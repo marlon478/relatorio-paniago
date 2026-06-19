@@ -281,7 +281,14 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(1);opacity:.5}
     </table></div>
     <p class="st">&#128200; Tendência &#8212; Compromissos Atrasados</p>
     <div class="chart-box full"><canvas id="ch-jur-atr" height="140"></canvas></div>
-  </div>
+
+    <p class="st">&#128202; Gr&#225;ficos &#8212; Processos e Compromissos</p>
+    <div class="charts-row">
+      <div class="chart-box tall"><div class="chart-title">Processos por Tipo</div><canvas id="ch-jur-tipos"></canvas></div>
+      <div class="chart-box xtall"><div class="chart-title">Compromissos em Atraso por Pessoa</div><canvas id="ch-jur-atraso-pessoa"></canvas></div>
+      <div class="chart-box tall"><div class="chart-title">Taxa de Cumprimento (Meta: 70%)</div><canvas id="ch-jur-taxa-tend"></canvas></div>
+      <div class="chart-box tall"><div class="chart-title">Movimenta&#231;&#227;o Processual</div><canvas id="ch-jur-movim"></canvas></div>
+    </div>  </div>
 </div>
 
 <script>
@@ -778,6 +785,18 @@ function onDateSelect(){
     renderAll(cl);
   }
 }
+function renderJurCharts(){
+  const j=appData[selDate]?.jur;if(!j)return;
+  const lo={display:true,labels:{color:'#a8b8cc',font:{size:10},boxWidth:12,padding:8}};
+  const c1=document.getElementById('ch-jur-tipos');if(c1){if(charts['ch-jur-tipos']){charts['ch-jur-tipos'].destroy();delete charts['ch-jur-tipos'];}charts['ch-jur-tipos']=new Chart(c1,{type:'doughnut',data:{labels:['Judiciais','Administrativos'],datasets:[{data:[j.processosJudicial,j.processosAdm],backgroundColor:['#f87171','#3b82f6'],borderWidth:0,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{color:'#a8b8cc',font:{size:10},boxWidth:12,padding:10}}}}});}
+  const comp=(j.compromissos||[]).filter(c=>c.atrasados>0).sort((a,b)=>b.atrasados-a.atrasados);const aC=comp.map(c=>c.atrasados>100?'#f87171':c.atrasados>30?'#f97316':c.atrasados>10?'#fbbf24':'#4ade80');
+  const c2=document.getElementById('ch-jur-atraso-pessoa');if(c2){if(charts['ch-jur-atraso-pessoa']){charts['ch-jur-atraso-pessoa'].destroy();delete charts['ch-jur-atraso-pessoa'];}charts['ch-jur-atraso-pessoa']=new Chart(c2,{type:'bar',data:{labels:comp.map(c=>c.resp),datasets:[{label:'Atrasados',data:comp.map(c=>c.atrasados),backgroundColor:aC,borderRadius:4,borderWidth:0}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#a8b8cc',font:{size:10}},grid:{color:'rgba(255,255,255,.08)'},beginAtZero:true},y:{ticks:{color:'#a8b8cc',font:{size:10}},grid:{color:'rgba(255,255,255,.05)'}}}}});}
+  const s7=dates.slice(-7);const tT=s7.map(d=>{const jd=appData[d]?.jur;if(!jd||!jd.compromissos?.length)return null;const tot=jd.compromissos.reduce((s,c)=>s+(c.agenda||0),0);const cum=jd.compromissos.reduce((s,c)=>s+(c.cumpridosD1||0),0);return tot>0?cum/tot*100:null;});
+  const c3=document.getElementById('ch-jur-taxa-tend');if(c3){if(charts['ch-jur-taxa-tend']){charts['ch-jur-taxa-tend'].destroy();delete charts['ch-jur-taxa-tend'];}charts['ch-jur-taxa-tend']=new Chart(c3,{type:'line',data:{labels:s7.map(d=>d.slice(5)),datasets:[{label:'Taxa (%)',data:tT,borderColor:'#3b82f6',backgroundColor:'#3b82f620',tension:.35,fill:true,pointRadius:3,spanGaps:true},{label:'Meta 70%',data:s7.map(()=>70),borderColor:'rgba(255,255,255,.5)',borderDash:[6,4],borderWidth:1.5,pointRadius:0,fill:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:lo},scales:{x:{ticks:{color:'#a8b8cc',font:{size:10}},grid:{color:'rgba(255,255,255,.05)'}},y:{ticks:{color:'#a8b8cc',font:{size:10},callback:v=>v+'%'},grid:{color:'rgba(255,255,255,.08)'},beginAtZero:true,max:100}}}});}
+  const mj=j.movimentacao?.judicial||{};const ma=j.movimentacao?.adm||{};const mL=['Publ./Intim.','Movimento','Pend.Ajuiz.','Ajuizados'];
+  const c4=document.getElementById('ch-jur-movim');if(c4){if(charts['ch-jur-movim']){charts['ch-jur-movim'].destroy();delete charts['ch-jur-movim'];}charts['ch-jur-movim']=new Chart(c4,{type:'bar',data:{labels:mL,datasets:[{label:'Adm',data:[ma.publicacoes??0,ma.movimento??0,ma.pendAjuiz??0,ma.ajuizados??0],backgroundColor:'#3b82f6',borderRadius:4},{label:'Judicial',data:[mj.publicacoes??0,mj.movimento??0,mj.pendAjuiz??0,mj.ajuizados??0],backgroundColor:'#f87171',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:lo},scales:{x:{ticks:{color:'#a8b8cc',font:{size:10}},grid:{color:'rgba(255,255,255,.05)'}},y:{ticks:{color:'#a8b8cc',font:{size:10}},grid:{color:'rgba(255,255,255,.08)'},beginAtZero:true}}}});}
+}
+
 function switchTab(id){
   document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));
@@ -786,7 +805,7 @@ function switchTab(id){
   // Renderiza gr\u00e1ficos da aba ao torn\u00e1-la vis\u00edvel
   if(id==='mkt'){mkChart('ch-mkt-lq',last7(d=>appData[d]?.mkt?.leadsQualD1??null));renderMktCharts();}
   if(id==='com'){mkChart('ch-com-ct',last7(d=>appData[d]?.com?.contratosD1??null),'#4ade80');renderComCharts();}
-  if(id==='jur') mkChart('ch-jur-atr', last7(atrFn),'#f87171');
+  if(id==='jur'){mkChart('ch-jur-atr',last7(atrFn),'#f87171');renderJurCharts();}
 }
 
 // ── INIT ─────────────────────────────────────────────
