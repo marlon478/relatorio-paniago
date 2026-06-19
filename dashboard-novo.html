@@ -84,6 +84,7 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(1);opacity:.5}
 .charts-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:4px}
 .chart-box{background:var(--navy2);border:1px solid var(--border);border-radius:10px;padding:14px}
 .chart-box canvas{height:160px!important}
+.chart-box.tall canvas{height:210px!important}
 .chart-box.full{grid-column:1/-1}
 .chart-title{font-size:11px;font-weight:700;color:var(--cream2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
 
@@ -182,6 +183,13 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(1);opacity:.5}
     </table></div>
     <p class="st">&#128200; Tendência &#8212; Leads Qualificados</p>
     <div class="chart-box full"><canvas id="ch-mkt-lq" height="140"></canvas></div>
+    <p class="st">&#128202; Tráfego Pago &#8212; Gráficos</p>
+    <div class="charts-row">
+      <div class="chart-box tall"><div class="chart-title">Leads por Canal D-1</div><canvas id="ch-mkt-lc-bar"></canvas></div>
+      <div class="chart-box tall"><div class="chart-title">Leads Qualificados vs. Totais — 7 Dias</div><canvas id="ch-mkt-lq-vs"></canvas></div>
+      <div class="chart-box tall"><div class="chart-title">Evolução do Investimento (Mês)</div><canvas id="ch-mkt-inv-evol"></canvas></div>
+      <div class="chart-box tall"><div class="chart-title">Investimento por Canal (Mês)</div><canvas id="ch-mkt-inv-canal"></canvas></div>
+    </div>
   </div>
 </div>
 
@@ -575,6 +583,66 @@ function renderJur(j,pj){
 
 function atrFn(d){const j=appData[d]?.jur;return j?(j.compromissos||[]).reduce((s,c)=>s+c.atrasados,0):null;}
 
+function mkBar(id,labels,values,colors,yFmt){
+  const ctx=document.getElementById(id);if(!ctx)return;
+  if(charts[id]){charts[id].destroy();delete charts[id];}
+  const defC=['#ef4444','#a855f7','#3b82f6','#4ade80','#f59e0b','#c9a84c'];
+  charts[id]=new Chart(ctx,{type:'bar',
+    data:{labels,datasets:[{data:values,backgroundColor:colors||labels.map((_,i)=>defC[i%defC.length]),borderRadius:4,borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{
+        x:{ticks:{color:'#a8b8cc',font:{size:10}},grid:{color:'rgba(255,255,255,.05)'}},
+        y:{ticks:{color:'#a8b8cc',font:{size:10},...(yFmt?{callback:yFmt}:{})},grid:{color:'rgba(255,255,255,.08)'},beginAtZero:true}
+      }
+    }
+  });
+}
+function mkLine2(id,labels,ds){
+  const ctx=document.getElementById(id);if(!ctx)return;
+  if(charts[id]){charts[id].destroy();delete charts[id];}
+  charts[id]=new Chart(ctx,{type:'line',data:{labels,datasets:ds},options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:true,labels:{color:'#a8b8cc',font:{size:10},boxWidth:12,padding:8}}},
+    scales:{
+      x:{ticks:{color:'#a8b8cc',font:{size:10}},grid:{color:'rgba(255,255,255,.05)'}},
+      y:{ticks:{color:'#a8b8cc',font:{size:10}},grid:{color:'rgba(255,255,255,.08)'},beginAtZero:true}
+    }
+  }});
+}
+function renderMktCharts(){
+  const m=appData[selDate]?.mkt;if(!m)return;
+  const dt=new Date(selDate+'T12:00:00Z');
+  const cColors={Google:'#ef4444',Meta:'#3b82f6',TikTok:'#a855f7',LinkedIn:'#0ea5e9'};
+  const defC=['#ef4444','#a855f7','#3b82f6','#4ade80'];
+
+  // 1. Leads por Canal D-1
+  const lc=m.leadsCanal||[];
+  mkBar('ch-mkt-lc-bar',lc.map(x=>x.fonte),lc.map(x=>x.d1),lc.map((_,i)=>defC[i%defC.length]));
+
+  // 2. Leads Qualificados vs Totais — últimos 7 dias
+  const s7=dates.slice(-7);
+  mkLine2('ch-mkt-lq-vs',s7.map(d=>d.slice(5)),[
+    {label:'Leads Totais',data:s7.map(d=>{const mk=appData[d]?.mkt;return mk?(mk.trafego||[]).reduce((s,t)=>s+t.leadsD1,0):null;}),
+     borderColor:'#3b82f6',backgroundColor:'#3b82f620',tension:.35,fill:true,pointRadius:3,spanGaps:true},
+    {label:'Qualificados',data:s7.map(d=>appData[d]?.mkt?.leadsQualD1??null),
+     borderColor:'#4ade80',backgroundColor:'#4ade8020',tension:.35,fill:true,pointRadius:3,spanGaps:true},
+  ]);
+
+  // 3. Evolução do Investimento — acumulado no mês
+  const yr=dt.getFullYear(),mo=dt.getMonth();
+  const mRecs=monthRecs(yr,mo);
+  let acc=0;
+  const evol=mRecs.map(d=>{const mk=appData[d]?.mkt;acc+=(mk?.trafego||[]).reduce((s,t)=>s+t.custoD1,0);return{x:d.slice(5),y:acc};});
+  mkChart('ch-mkt-inv-evol',{labels:evol.map(e=>e.x),values:evol.map(e=>e.y)},'#c9a84c');
+
+  // 4. Investimento por Canal — total do mês
+  const cm={};
+  mRecs.forEach(d=>{(appData[d]?.mkt?.trafego||[]).forEach(t=>{cm[t.canal]=(cm[t.canal]||0)+t.custoD1;});});
+  const ce=Object.entries(cm).filter(([,v])=>v>0);
+  const rFmt=v=>'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0});
+  mkBar('ch-mkt-inv-canal',ce.map(([k])=>k),ce.map(([,v])=>v),ce.map(([k])=>cColors[k]||'#c9a84c'),rFmt);
+}
+
 function renderCharts(){
   // S\u00f3 renderiza gr\u00e1ficos da aba Geral (vis\u00edvel na inicializa\u00e7\u00e3o)
   mkChart('ch-lq',  last7(d=>appData[d]?.mkt?.leadsQualD1??null));
@@ -602,7 +670,7 @@ function switchTab(id){
   document.getElementById('pane-'+id).classList.add('on');
   document.getElementById('btn-'+id).classList.add('on');
   // Renderiza gr\u00e1ficos da aba ao torn\u00e1-la vis\u00edvel
-  if(id==='mkt') mkChart('ch-mkt-lq', last7(d=>appData[d]?.mkt?.leadsQualD1??null));
+  if(id==='mkt'){mkChart('ch-mkt-lq',last7(d=>appData[d]?.mkt?.leadsQualD1??null));renderMktCharts();}
   if(id==='com') mkChart('ch-com-ct', last7(d=>appData[d]?.com?.contratosD1??null),'#4ade80');
   if(id==='jur') mkChart('ch-jur-atr', last7(atrFn),'#f87171');
 }
