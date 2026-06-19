@@ -3,623 +3,723 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Relatório Diário — Mendes Paniago</title>
+<title>FormulÃ¡rio DiÃ¡rio â Mendes Paniago</title>
 <style>
 :root {
-  --navy:#0f2640;--navy2:#162f4f;--navy3:#1e3d60;
-  --cream:#e8dfc8;--cream2:#a8b8cc;
+  --navy:#0f2640; --navy2:#162f4f; --navy3:#1e3d60;
+  --cream:#e8dfc8; --cream2:#a8b8cc;
   --gold:#c9a84c;
-  --green:#4ade80;--green-light:rgba(74,222,128,.13);
-  --yellow:#fbbf24;--yellow-light:rgba(251,191,36,.13);
-  --red:#f87171;--red-light:rgba(248,113,113,.13);
+  --green:#4ade80; --yellow:#fbbf24; --red:#f87171;
   --border:rgba(255,255,255,.12);
-  --input-bg:rgba(255,255,255,.07);
-  --input-border:rgba(255,255,255,.18);
+  --ibg:rgba(255,255,255,.07);
+  --iborder:rgba(255,255,255,.18);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--navy);color:var(--cream);font-family:'Segoe UI',Arial,sans-serif;min-height:100vh;padding-bottom:60px}
+body{background:var(--navy);color:var(--cream);font-family:'Segoe UI',Arial,sans-serif;min-height:100vh;padding-bottom:72px}
+#lbar{height:3px;background:var(--gold);width:0;transition:width .4s;position:fixed;top:0;left:0;z-index:9999}
 
-/* HEADER */
-.hdr{background:var(--navy2);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:100}
-.hdr-logo svg{display:block}
-.hdr-title{font-size:16px;font-weight:700;color:var(--cream)}
-.hdr-sub{font-size:11px;color:var(--cream2)}
-.hdr-spacer{flex:1}
+.hdr{background:var(--navy2);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100}
+.hdr-info .t{font-size:15px;font-weight:700;color:var(--cream)}
+.hdr-info .s{font-size:11px;color:var(--cream2)}
+.sp{flex:1}
+.pills{display:flex;gap:6px}
+.pill{font-size:10px;font-weight:700;padding:3px 9px;border-radius:12px;border:1px solid var(--border);color:var(--cream2);transition:.2s}
+.pill.ok{color:var(--green);border-color:var(--green);background:rgba(74,222,128,.08)}
 .hdr-date{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--cream2)}
-.hdr-date input[type=date]{background:var(--input-bg);border:1px solid var(--input-border);color:var(--cream);padding:6px 10px;border-radius:6px;font-size:13px;cursor:pointer}
+.hdr-date input[type=date]{background:var(--ibg);border:1px solid var(--iborder);color:var(--cream);padding:6px 10px;border-radius:6px;font-size:13px;cursor:pointer}
 .hdr-date input[type=date]::-webkit-calendar-picker-indicator{filter:invert(1);opacity:.6}
 
-/* TABS */
-.tabs-nav{background:var(--navy2);border-bottom:1px solid var(--border);padding:0 24px;display:flex;gap:4px}
-.tab-btn{background:none;border:none;border-bottom:3px solid transparent;color:var(--cream2);padding:12px 18px;cursor:pointer;font-size:13px;font-weight:600;transition:.2s;white-space:nowrap}
-.tab-btn:hover{color:var(--cream)}
-.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
-.tab-pane{display:none;padding:24px;max-width:900px;margin:0 auto}
-.tab-pane.active{display:block}
+.tnav{background:var(--navy2);border-bottom:1px solid var(--border);padding:0 20px;display:flex;gap:4px;position:sticky;top:57px;z-index:99}
+.tb{background:none;border:none;border-bottom:3px solid transparent;color:var(--cream2);padding:11px 16px;cursor:pointer;font-size:13px;font-weight:600;transition:.15s}
+.tb:hover{color:var(--cream)}
+.tb.on{color:var(--gold);border-bottom-color:var(--gold)}
 
-/* SECTION TITLE */
-.sec-title{font-size:15px;font-weight:700;color:var(--gold);border-bottom:1px solid var(--border);padding-bottom:8px;margin:24px 0 16px}
-.sec-title:first-child{margin-top:0}
+.pane{display:none;padding:22px 20px;max-width:920px;margin:0 auto}
+.pane.on{display:block}
 
-/* GRID */
-.grid{display:grid;gap:12px}
-.grid-2{grid-template-columns:1fr 1fr}
-.grid-3{grid-template-columns:1fr 1fr 1fr}
-.grid-4{grid-template-columns:repeat(4,1fr)}
-@media(max-width:640px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr 1fr}}
-@media(max-width:420px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
+.st{font-size:13px;font-weight:700;color:var(--gold);border-bottom:1px solid var(--border);padding-bottom:7px;margin:22px 0 13px}
+.st:first-child{margin-top:0}
 
-/* FIELD */
-.field{display:flex;flex-direction:column;gap:4px}
-.field label{font-size:11px;font-weight:600;color:var(--cream2);text-transform:uppercase;letter-spacing:.8px}
-.field input,.field select{background:var(--input-bg);border:1px solid var(--input-border);color:var(--cream);padding:8px 10px;border-radius:6px;font-size:14px;width:100%;transition:.2s}
-.field input:focus,.field select:focus{outline:none;border-color:var(--gold);background:rgba(201,168,76,.08)}
-.field input::placeholder{color:rgba(168,184,204,.4)}
-.field select option{background:var(--navy2)}
+.g{display:grid;gap:10px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:640px){.g3{grid-template-columns:1fr 1fr}}
 
-/* CARD DE PESSOA */
-.person-card{background:var(--navy2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px}
-.person-card .person-name{font-size:13px;font-weight:700;color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.f{display:flex;flex-direction:column;gap:3px}
+.f label{font-size:10px;font-weight:700;color:var(--cream2);text-transform:uppercase;letter-spacing:.8px}
+.f input{background:var(--ibg);border:1px solid var(--iborder);color:var(--cream);padding:7px 9px;border-radius:6px;font-size:14px;width:100%;transition:.15s}
+.f input:focus{outline:none;border-color:var(--gold);background:rgba(201,168,76,.07)}
+.f input.calc{background:rgba(201,168,76,.07);color:var(--gold);border-color:rgba(201,168,76,.25);font-weight:600}
 
-/* TABLE-LIKE */
-.tbl-form{width:100%;border-collapse:separate;border-spacing:0 4px}
-.tbl-form th{font-size:10px;font-weight:600;color:var(--cream2);text-transform:uppercase;letter-spacing:.8px;padding:4px 8px;text-align:left}
-.tbl-form td{padding:3px 4px}
-.tbl-form td:first-child{font-size:12px;color:var(--cream);padding-left:8px;white-space:nowrap;width:180px}
-.tbl-form input{background:var(--input-bg);border:1px solid var(--input-border);color:var(--cream);padding:5px 8px;border-radius:5px;font-size:13px;width:100%;text-align:center}
-.tbl-form input:focus{outline:none;border-color:var(--gold)}
-.tbl-form tr.tbl-header td{font-size:10px;font-weight:700;color:var(--cream2);text-transform:uppercase;letter-spacing:.8px;background:rgba(255,255,255,.04);border-radius:4px}
+.tbl{width:100%;border-collapse:separate;border-spacing:0 2px}
+.tbl thead th{font-size:10px;font-weight:700;color:var(--cream2);text-transform:uppercase;letter-spacing:.7px;padding:5px 6px;text-align:center;background:rgba(255,255,255,.04)}
+.tbl thead th:first-child{text-align:left}
+.tbl td{padding:2px 3px}
+.tbl td.rl{font-size:12px;color:var(--cream);padding:0 8px;white-space:nowrap;min-width:170px}
+.tbl tbody tr:nth-child(even) .rl{color:var(--cream2)}
+.tbl input{background:var(--ibg);border:1px solid var(--iborder);color:var(--cream);padding:5px 7px;border-radius:5px;font-size:13px;width:100%;text-align:center;transition:.15s}
+.tbl input:focus{outline:none;border-color:var(--gold)}
+.tbl input.calc{background:rgba(201,168,76,.07);color:var(--gold);border-color:rgba(201,168,76,.25);font-weight:600}
 
-/* FOOTER */
-.form-footer{position:fixed;bottom:0;left:0;right:0;background:var(--navy2);border-top:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:200}
-.form-footer .status-msg{font-size:12px;color:var(--cream2)}
-.btn{padding:10px 22px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:.2s;letter-spacing:.5px}
-.btn-primary{background:var(--gold);color:var(--navy)}
-.btn-primary:hover{background:#d4b050}
-.btn-secondary{background:transparent;color:var(--cream2);border:1px solid var(--border)}
-.btn-secondary:hover{background:var(--input-bg);color:var(--cream)}
-.btn:disabled{opacity:.4;cursor:not-allowed}
+.footer{position:fixed;bottom:0;left:0;right:0;background:var(--navy2);border-top:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:200}
+.finfo{font-size:11px;color:var(--cream2)}
+.btns{display:flex;gap:8px}
+.btn{padding:9px 18px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:.15s}
+.btn-p{background:var(--gold);color:var(--navy)}
+.btn-p:hover{background:#d4b050}
+.btn-p:disabled{opacity:.4;cursor:not-allowed}
+.btn-o{background:transparent;color:var(--cream2);border:1px solid var(--border)}
+.btn-o:hover{background:var(--ibg);color:var(--cream)}
 
-/* TOAST */
-.toast{position:fixed;top:70px;right:20px;background:var(--navy3);border:1px solid var(--border);color:var(--cream);padding:10px 16px;border-radius:8px;font-size:13px;z-index:999;display:none;box-shadow:0 4px 20px rgba(0,0,0,.4)}
-.toast.show{display:block}
-.toast.g{border-color:var(--green);color:var(--green)}
-.toast.r{border-color:var(--red);color:var(--red)}
+.toast{position:fixed;top:68px;right:18px;background:var(--navy3);border:1px solid var(--border);color:var(--cream);padding:9px 15px;border-radius:8px;font-size:13px;z-index:999;opacity:0;pointer-events:none;transition:opacity .25s;box-shadow:0 4px 20px rgba(0,0,0,.4);max-width:320px}
+.toast.show{opacity:1}
+.toast.ok{border-color:var(--green);color:var(--green)}
+.toast.err{border-color:var(--red);color:var(--red)}
+.toast.warn{border-color:var(--yellow);color:var(--yellow)}
 
-/* INFO BOX */
-.info-box{background:var(--yellow-light);border:1px solid rgba(251,191,36,.3);border-radius:8px;padding:12px 16px;font-size:12px;color:var(--yellow);margin-bottom:16px;line-height:1.6}
-
-/* DIVIDER */
-.divider{border:none;border-top:1px solid var(--border);margin:20px 0}
+.info{background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.22);border-radius:7px;padding:9px 13px;font-size:12px;color:var(--yellow);margin-bottom:14px;line-height:1.5;display:none}
 </style>
 </head>
 <body>
+<div id="lbar"></div>
 
-<!-- HEADER -->
 <header class="hdr">
-  <svg width="100" height="34" viewBox="0 0 130 40" fill="none"><rect width="130" height="40" rx="6" fill="#0f2640"/><rect x="0" y="36.5" width="130" height="2" rx="1" fill="#c9a84c" opacity=".8"/><text x="8" y="17" font-family="'Segoe UI',Arial,sans-serif" font-size="11" font-weight="800" letter-spacing="2.5" fill="#e8dfc8">MENDES</text><text x="8" y="31" font-family="'Segoe UI',Arial,sans-serif" font-size="11" font-weight="800" letter-spacing="2.5" fill="#c9a84c">PANIAGO</text></svg>
-  <div>
-    <div class="hdr-title">Relatório Diário</div>
-    <div class="hdr-sub" id="area-subtitle">Formulário de Preenchimento</div>
+  <svg width="90" height="30" viewBox="0 0 130 40" fill="none">
+    <rect width="130" height="40" rx="6" fill="#0f2640"/>
+    <rect x="0" y="36.5" width="130" height="2" rx="1" fill="#c9a84c" opacity=".8"/>
+    <text x="8" y="17" font-family="'Segoe UI',Arial" font-size="11" font-weight="800" letter-spacing="2.5" fill="#e8dfc8">MENDES</text>
+    <text x="8" y="31" font-family="'Segoe UI',Arial" font-size="11" font-weight="800" letter-spacing="2.5" fill="#c9a84c">PANIAGO</text>
+  </svg>
+  <div class="hdr-info">
+    <div class="t">RelatÃ³rio DiÃ¡rio</div>
+    <div class="s">Dados de D-1 Â· Supabase</div>
   </div>
-  <div class="hdr-spacer"></div>
+  <div class="sp"></div>
+  <div class="pills">
+    <span class="pill" id="pill-mkt">MKT</span>
+    <span class="pill" id="pill-com">COM</span>
+    <span class="pill" id="pill-jur">JUR</span>
+  </div>
   <div class="hdr-date">
     <span>Data:</span>
-    <input type="date" id="report-date">
+    <input type="date" id="rdate" onchange="onDateChange()">
   </div>
 </header>
 
-<!-- TABS -->
-<nav class="tabs-nav" id="tabs-nav">
-  <button class="tab-btn active" onclick="switchTab('mkt',this)" id="btn-mkt">📣 Marketing</button>
-  <button class="tab-btn" onclick="switchTab('com',this)" id="btn-com">💼 Comercial</button>
-  <button class="tab-btn" onclick="switchTab('jur',this)" id="btn-jur">⚖️ Jurídico</button>
+<nav class="tnav">
+  <button class="tb on" id="btn-mkt" onclick="switchTab('mkt')">ð£ Marketing</button>
+  <button class="tb" id="btn-com" onclick="switchTab('com')">ð¼ Comercial</button>
+  <button class="tb" id="btn-jur" onclick="switchTab('jur')">âï¸ JurÃ­dico</button>
 </nav>
 
-<!-- ====== MARKETING ====== -->
-<div id="tab-mkt" class="tab-pane active">
+<!-- âââââââââââ MARKETING âââââââââââ -->
+<div id="pane-mkt" class="pane on">
+  <div class="info" id="info-box"></div>
 
-  <p class="sec-title">📱 Redes Sociais — Postagens do Dia</p>
-  <table class="tbl-form">
-    <thead>
-      <tr>
-        <th>Canal</th>
-        <th>Feed D-1</th>
-        <th>Stories D-1</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td>Facebook Mendes Paniago</td><td><input type="number" id="rs-fbm-fd1" min="0" value="0"></td><td><input type="number" id="rs-fbm-sd1" min="0" value="0"></td></tr>
-      <tr><td>Facebook Elias</td><td><input type="number" id="rs-fbe-fd1" min="0" value="0"></td><td><input type="number" id="rs-fbe-sd1" min="0" value="0"></td></tr>
-      <tr><td>Facebook Pabla</td><td><input type="number" id="rs-fbp-fd1" min="0" value="0"></td><td><input type="number" id="rs-fbp-sd1" min="0" value="0"></td></tr>
-      <tr><td>Instagram Mendes Paniago</td><td><input type="number" id="rs-igm-fd1" min="0" value="0"></td><td><input type="number" id="rs-igm-sd1" min="0" value="0"></td></tr>
-      <tr><td>Instagram Elias</td><td><input type="number" id="rs-ige-fd1" min="0" value="0"></td><td><input type="number" id="rs-ige-sd1" min="0" value="0"></td></tr>
-      <tr><td>Instagram Pabla</td><td><input type="number" id="rs-igp-fd1" min="0" value="0"></td><td><input type="number" id="rs-igp-sd1" min="0" value="0"></td></tr>
-      <tr><td>TikTok Dr. Pabla</td><td><input type="number" id="rs-ttp-fd1" min="0" value="0"></td><td><input type="number" id="rs-ttp-sd1" min="0" value="0"></td></tr>
-      <tr><td>TikTok Dr. Elias</td><td><input type="number" id="rs-tte-fd1" min="0" value="0"></td><td><input type="number" id="rs-tte-sd1" min="0" value="0"></td></tr>
-      <tr><td>TikTok Mendes Paniago</td><td><input type="number" id="rs-ttm-fd1" min="0" value="0"></td><td><input type="number" id="rs-ttm-sd1" min="0" value="0"></td></tr>
-      <tr><td>LinkedIn Mendes Paniago</td><td><input type="number" id="rs-lim-fd1" min="0" value="0"></td><td><input type="number" id="rs-lim-sd1" min="0" value="0"></td></tr>
-      <tr><td>YouTube</td><td><input type="number" id="rs-yt-fd1" min="0" value="0"></td><td><input type="number" id="rs-yt-sd1" min="0" value="0"></td></tr>
-    </tbody>
-  </table>
+  <p class="st">ð Geral D-1</p>
+  <div class="g g2">
+    <div class="f"><label>Leads Qualificados D-1</label><input type="number" id="m-lqd1" min="0" value="0"></div>
+    <div class="f"><label>Seguidores (snapshot)</label><input type="number" id="m-seg" min="0" value="0"></div>
+  </div>
 
-  <p class="sec-title">👥 Seguidores por Rede Social (D-1)</p>
-  <table class="tbl-form">
-    <thead>
-      <tr>
-        <th>Rede Social</th>
-        <th>Seguidores D-1</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td>Instagram</td><td><input type="number" id="seg-ig-d1" min="0" value="0"></td></tr>
-      <tr><td>TikTok Dr. Elias</td><td><input type="number" id="seg-tte-d1" min="0" value="0"></td></tr>
-      <tr><td>TikTok Dr. Pabla</td><td><input type="number" id="seg-ttp-d1" min="0" value="0"></td></tr>
-      <tr><td>Facebook</td><td><input type="number" id="seg-fb-d1" min="0" value="0"></td></tr>
-      <tr><td>YouTube</td><td><input type="number" id="seg-yt-d1" min="0" value="0"></td></tr>
-      <tr><td>LinkedIn</td><td><input type="number" id="seg-li-d1" min="0" value="0"></td></tr>
-      <tr><td>Outros</td><td><input type="number" id="seg-outros-d1" min="0" value="0"></td></tr>
-    </tbody>
-  </table>
-
-  <p class="sec-title">🎯 Leads por Canal de Captação (D-1)</p>
-  <table class="tbl-form">
-    <thead>
-      <tr>
-        <th>Canal</th>
-        <th>D-1</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td>Instagram</td><td><input type="number" id="leads-ig-d1" min="0" value="0"></td></tr>
-      <tr><td>TikTok Dr. Elias</td><td><input type="number" id="leads-tte-d1" min="0" value="0"></td></tr>
-      <tr><td>TikTok Dr. Pabla</td><td><input type="number" id="leads-ttp-d1" min="0" value="0"></td></tr>
-      <tr><td>Google</td><td><input type="number" id="leads-gg-d1" min="0" value="0"></td></tr>
-      <tr><td>Facebook</td><td><input type="number" id="leads-fb-d1" min="0" value="0"></td></tr>
-      <tr><td>WhatsApp</td><td><input type="number" id="leads-wa-d1" min="0" value="0"></td></tr>
-      <tr><td>Indicação</td><td><input type="number" id="leads-ind-d1" min="0" value="0"></td></tr>
-      <tr><td>Orgânico</td><td><input type="number" id="leads-org-d1" min="0" value="0"></td></tr>
-      <tr><td>Site</td><td><input type="number" id="leads-site-d1" min="0" value="0"></td></tr>
-      <tr><td>Empresas</td><td><input type="number" id="leads-emp-d1" min="0" value="0"></td></tr>
-    </tbody>
-  </table>
-
-  <p class="sec-title">⭐ Leads Qualificados por Meio de Captação (D-1)</p>
-  <table class="tbl-form">
-    <thead>
-      <tr>
-        <th>Meio de Captação</th>
-        <th>D-1</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td>TikTok Dr. Elias</td><td><input type="number" id="lq-tte-d1" min="0" value="0"></td></tr>
-      <tr><td>TikTok Dr. Pabla</td><td><input type="number" id="lq-ttp-d1" min="0" value="0"></td></tr>
-      <tr><td>Instagram</td><td><input type="number" id="lq-ig-d1" min="0" value="0"></td></tr>
-      <tr><td>Google Ads</td><td><input type="number" id="lq-gg-d1" min="0" value="0"></td></tr>
-      <tr><td>WhatsApp</td><td><input type="number" id="lq-wa-d1" min="0" value="0"></td></tr>
-      <tr><td>Empresas</td><td><input type="number" id="lq-emp-d1" min="0" value="0"></td></tr>
-      <tr><td>Indicação</td><td><input type="number" id="lq-ind-d1" min="0" value="0"></td></tr>
-      <tr><td>Orgânico</td><td><input type="number" id="lq-org-d1" min="0" value="0"></td></tr>
-      <tr><td>Outros Meios</td><td><input type="number" id="lq-outros-d1" min="0" value="0"></td></tr>
-    </tbody>
-  </table>
-
-  <p class="sec-title">💰 Tráfego Pago D-1</p>
-  <table class="tbl-form">
+  <p class="st">ð° TrÃ¡fego Pago D-1</p>
+  <table class="tbl">
     <thead>
       <tr>
         <th>Canal</th>
         <th>Custo D-1 (R$)</th>
-        <th>Cliques</th>
-        <th>CPC (R$)</th>
-        <th>Leads</th>
-        <th>CPL (R$)</th>
+        <th>Leads D-1</th>
+        <th>CPL (auto)</th>
       </tr>
     </thead>
     <tbody>
-      <tr><td>Google</td><td><input type="number" id="tr-gg-custo" min="0" step="0.01" value="0"></td><td><input type="number" id="tr-gg-cli" min="0" value="0"></td><td><input type="number" id="tr-gg-cpc" min="0" step="0.01" value="0"></td><td><input type="number" id="tr-gg-leads" min="0" value="0"></td><td><input type="number" id="tr-gg-cpl" min="0" step="0.01" value="0"></td></tr>
-      <tr><td>Meta</td><td><input type="number" id="tr-mt-custo" min="0" step="0.01" value="0"></td><td><input type="number" id="tr-mt-cli" min="0" value="0"></td><td><input type="number" id="tr-mt-cpc" min="0" step="0.01" value="0"></td><td><input type="number" id="tr-mt-leads" min="0" value="0"></td><td><input type="number" id="tr-mt-cpl" min="0" step="0.01" value="0"></td></tr>
-      <tr><td>TikTok</td><td><input type="number" id="tr-tt-custo" min="0" step="0.01" value="0"></td><td><input type="number" id="tr-tt-cli" min="0" value="0"></td><td><input type="number" id="tr-tt-cpc" min="0" step="0.01" value="0"></td><td><input type="number" id="tr-tt-leads" min="0" value="0"></td><td><input type="number" id="tr-tt-cpl" min="0" step="0.01" value="0"></td></tr>
-      <tr><td>LinkedIn</td><td><input type="number" id="tr-li-custo" min="0" step="0.01" value="0"></td><td><input type="number" id="tr-li-cli" min="0" value="0"></td><td><input type="number" id="tr-li-cpc" min="0" step="0.01" value="0"></td><td><input type="number" id="tr-li-leads" min="0" value="0"></td><td><input type="number" id="tr-li-cpl" min="0" step="0.01" value="0"></td></tr>
+      <tr>
+        <td class="rl">Google</td>
+        <td><input type="number" id="tr-gg-cus" min="0" step="0.01" value="0" oninput="calcCPL('gg')"></td>
+        <td><input type="number" id="tr-gg-lea" min="0" value="0" oninput="calcCPL('gg')"></td>
+        <td><input type="number" id="tr-gg-cpl" class="calc" readonly></td>
+      </tr>
+      <tr>
+        <td class="rl">Meta</td>
+        <td><input type="number" id="tr-mt-cus" min="0" step="0.01" value="0" oninput="calcCPL('mt')"></td>
+        <td><input type="number" id="tr-mt-lea" min="0" value="0" oninput="calcCPL('mt')"></td>
+        <td><input type="number" id="tr-mt-cpl" class="calc" readonly></td>
+      </tr>
+      <tr>
+        <td class="rl">TikTok</td>
+        <td><input type="number" id="tr-tt-cus" min="0" step="0.01" value="0" oninput="calcCPL('tt')"></td>
+        <td><input type="number" id="tr-tt-lea" min="0" value="0" oninput="calcCPL('tt')"></td>
+        <td><input type="number" id="tr-tt-cpl" class="calc" readonly></td>
+      </tr>
+      <tr>
+        <td class="rl">LinkedIn</td>
+        <td><input type="number" id="tr-li-cus" min="0" step="0.01" value="0" oninput="calcCPL('li')"></td>
+        <td><input type="number" id="tr-li-lea" min="0" value="0" oninput="calcCPL('li')"></td>
+        <td><input type="number" id="tr-li-cpl" class="calc" readonly></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="st">ð¯ Leads por Canal D-1</p>
+  <table class="tbl">
+    <thead>
+      <tr><th>Canal</th><th>Leads D-1</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="rl">TikTok Dr. Pabla</td><td><input type="number" id="lc-ttp-d1" min="0" value="0"></td></tr>
+      <tr><td class="rl">TikTok Dr. Elias</td><td><input type="number" id="lc-tte-d1" min="0" value="0"></td></tr>
+      <tr><td class="rl">Instagram</td><td><input type="number" id="lc-ig-d1" min="0" value="0"></td></tr>
+      <tr><td class="rl">Facebook</td><td><input type="number" id="lc-fb-d1" min="0" value="0"></td></tr>
+      <tr><td class="rl">Google</td><td><input type="number" id="lc-gg-d1" min="0" value="0"></td></tr>
+      <tr><td class="rl">IndicaÃ§Ã£o</td><td><input type="number" id="lc-ind-d1" min="0" value="0"></td></tr>
+      <tr><td class="rl">Outros Meios</td><td><input type="number" id="lc-out-d1" min="0" value="0"></td></tr>
+    </tbody>
+  </table>
+
+  <p class="st">â Leads Qualificados por Canal D-1</p>
+  <table class="tbl">
+    <thead>
+      <tr><th>Canal</th><th>Leads Qual. D-1</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="rl">TikTok Dr. Pabla</td><td><input type="number" id="lq-ttp-d1" min="0" value="0"></td></tr>
+      <tr><td class="rl">TikTok Dr. Elias</td><td><input type="number" id="lq-tte-d1" min="0" value="0"></td></tr>
+      <tr><td class="rl">Instagram</td><td><input type="number" id="lq-ig-d1" min="0" value="0"></td></tr>
+      <tr><td class="rl">Facebook</td><td><input type="number" id="lq-fb-d1" min="0" value="0"></td></tr>
+      <tr><td class="rl">Google</td><td><input type="number" id="lq-gg-d1" min="0" value="0"></td></tr>
+      <tr><td class="rl">IndicaÃ§Ã£o</td><td><input type="number" id="lq-ind-d1" min="0" value="0"></td></tr>
+      <tr><td class="rl">Outros Meios</td><td><input type="number" id="lq-out-d1" min="0" value="0"></td></tr>
+    </tbody>
+  </table>
+
+  <p class="st">ð± Redes Sociais D-1</p>
+  <table class="tbl">
+    <thead>
+      <tr><th>Perfil</th><th>Postagem D-1</th><th>Stories D-1</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="rl">Facebook Mendes Paniago</td><td><input type="number" id="rs-fbmp-pd1" min="0" value="0"></td><td><input type="number" id="rs-fbmp-sd1" min="0" value="0"></td></tr>
+      <tr><td class="rl">Facebook Elias</td><td><input type="number" id="rs-fbe-pd1" min="0" value="0"></td><td><input type="number" id="rs-fbe-sd1" min="0" value="0"></td></tr>
+      <tr><td class="rl">Facebook Pabla</td><td><input type="number" id="rs-fbp-pd1" min="0" value="0"></td><td><input type="number" id="rs-fbp-sd1" min="0" value="0"></td></tr>
+      <tr><td class="rl">Instagram Mendes Paniago</td><td><input type="number" id="rs-igmp-pd1" min="0" value="0"></td><td><input type="number" id="rs-igmp-sd1" min="0" value="0"></td></tr>
+      <tr><td class="rl">Instagram Elias</td><td><input type="number" id="rs-ige-pd1" min="0" value="0"></td><td><input type="number" id="rs-ige-sd1" min="0" value="0"></td></tr>
+      <tr><td class="rl">Instagram Pabla</td><td><input type="number" id="rs-igp-pd1" min="0" value="0"></td><td><input type="number" id="rs-igp-sd1" min="0" value="0"></td></tr>
+      <tr><td class="rl">TT - Pabla</td><td><input type="number" id="rs-ttp-pd1" min="0" value="0"></td><td><input type="number" id="rs-ttp-sd1" min="0" value="0"></td></tr>
+      <tr><td class="rl">TT - Elias</td><td><input type="number" id="rs-tte-pd1" min="0" value="0"></td><td><input type="number" id="rs-tte-sd1" min="0" value="0"></td></tr>
+      <tr><td class="rl">TT - Mendes Paniago</td><td><input type="number" id="rs-ttmp-pd1" min="0" value="0"></td><td><input type="number" id="rs-ttmp-sd1" min="0" value="0"></td></tr>
+      <tr><td class="rl">LinkedIn - Mendes Paniago</td><td><input type="number" id="rs-limp-pd1" min="0" value="0"></td><td><input type="number" id="rs-limp-sd1" min="0" value="0"></td></tr>
+      <tr><td class="rl">YouTube</td><td><input type="number" id="rs-yt-pd1" min="0" value="0"></td><td><input type="number" id="rs-yt-sd1" min="0" value="0"></td></tr>
     </tbody>
   </table>
 </div>
 
-<!-- ====== COMERCIAL ====== -->
-<div id="tab-com" class="tab-pane">
+<!-- âââââââââââ COMERCIAL âââââââââââ -->
+<div id="pane-com" class="pane">
 
-  <p class="sec-title">📞 Atividade Comercial — D-1</p>
-  <div class="person-card">
-    <div class="person-name">👤 Patricia</div>
-    <div class="grid grid-3">
-      <div class="field"><label>Tentativas D-1</label><input type="number" id="com-pat-tent" min="0" value="0"></div>
-      <div class="field"><label>Efetivas D-1</label><input type="number" id="com-pat-efet" min="0" value="0"></div>
-      <div class="field"><label>FAC D-1</label><input type="number" id="com-pat-fac" min="0" value="0"></div>
-    </div>
-  </div>
-  <div class="person-card">
-    <div class="person-name">👤 Marielle</div>
-    <div class="grid grid-3">
-      <div class="field"><label>Tentativas D-1</label><input type="number" id="com-mar-tent" min="0" value="0"></div>
-      <div class="field"><label>Efetivas D-1</label><input type="number" id="com-mar-efet" min="0" value="0"></div>
-      <div class="field"><label>FAC D-1</label><input type="number" id="com-mar-fac" min="0" value="0"></div>
-    </div>
+  <p class="st">ð¯ Oportunidades & Contratos D-1</p>
+  <div class="g g2">
+    <div class="f"><label>Oportunidades D-1</label><input type="number" id="c-opd1" min="0" value="0"></div>
+    <div class="f"><label>Contratos D-1</label><input type="number" id="c-ctd1" min="0" value="0"></div>
   </div>
 
-  <p class="sec-title">📄 Documentação</p>
-  <div class="person-card">
-    <div class="person-name">👤 Graciele</div>
-    <div class="grid grid-3">
-      <div class="field"><label>Contato Efetivo D-1</label><input type="number" id="doc-gra-cont" min="0" value="0"></div>
-      <div class="field"><label>Docs Finalizados D-1</label><input type="number" id="doc-gra-doc" min="0" value="0"></div>
-      <div class="field"><label>Análises D-1</label><input type="number" id="doc-gra-anal" min="0" value="0"></div>
-    </div>
-  </div>
-  <div class="person-card">
-    <div class="person-name">👤 Marielle (Documentação)</div>
-    <div class="grid grid-3">
-      <div class="field"><label>Contato Efetivo D-1</label><input type="number" id="doc-mar-cont" min="0" value="0"></div>
-      <div class="field"><label>Docs Finalizados D-1</label><input type="number" id="doc-mar-doc" min="0" value="0"></div>
-      <div class="field"><label>Análises D-1</label><input type="number" id="doc-mar-anal" min="0" value="0"></div>
-    </div>
-  </div>
+  <p class="st">ð Equipe Comercial D-1</p>
+  <table class="tbl">
+    <thead>
+      <tr><th>Pessoa</th><th>Tentativas D-1</th><th>Efetivas D-1</th><th>FAC D-1</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="rl">Patricia</td>
+        <td><input type="number" id="eq-pat-td1" min="0" value="0"></td>
+        <td><input type="number" id="eq-pat-ed1" min="0" value="0"></td>
+        <td><input type="number" id="eq-pat-fd1" min="0" value="0"></td>
+      </tr>
+      <tr>
+        <td class="rl">Marielle</td>
+        <td><input type="number" id="eq-mar-td1" min="0" value="0"></td>
+        <td><input type="number" id="eq-mar-ed1" min="0" value="0"></td>
+        <td><input type="number" id="eq-mar-fd1" min="0" value="0"></td>
+      </tr>
+    </tbody>
+  </table>
 
-  <p class="sec-title">📊 Análises e Propostas (D-1)</p>
-  <div class="person-card">
-    <div class="person-name">👤 Pabla</div>
-    <div class="grid grid-2">
-      <div class="field"><label>Análises Realizadas D-1</label><input type="number" id="doc-pab-anal" min="0" value="0"></div>
-      <div class="field"><label>Apresentação de Proposta D-1</label><input type="number" id="doc-pab-prop" min="0" value="0"></div>
-    </div>
-  </div>
-  <div class="person-card">
-    <div class="person-name">👤 Elias</div>
-    <div class="grid grid-2">
-      <div class="field"><label>Análises Realizadas D-1</label><input type="number" id="doc-eli-anal" min="0" value="0"></div>
-      <div class="field"><label>Apresentação de Proposta D-1</label><input type="number" id="doc-eli-prop" min="0" value="0"></div>
-    </div>
-  </div>
+  <p class="st">ð DocumentaÃ§Ã£o D-1 â Administrativo</p>
+  <table class="tbl">
+    <thead>
+      <tr><th>ResponsÃ¡vel</th><th>Contato D-1</th><th>Doc.Fin. D-1</th><th>AnÃ¡lises D-1</th><th>Propostas D-1</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="rl">Graciele</td>
+        <td><input type="number" id="dc-gra-ctd1" min="0" value="0"></td>
+        <td><input type="number" id="dc-gra-dfd1" min="0" value="0"></td>
+        <td><input type="number" id="dc-gra-and1" min="0" value="0"></td>
+        <td><input type="number" id="dc-gra-prd1" min="0" value="0"></td>
+      </tr>
+      <tr>
+        <td class="rl">Marielle</td>
+        <td><input type="number" id="dc-mar-ctd1" min="0" value="0"></td>
+        <td><input type="number" id="dc-mar-dfd1" min="0" value="0"></td>
+        <td><input type="number" id="dc-mar-and1" min="0" value="0"></td>
+        <td><input type="number" id="dc-mar-prd1" min="0" value="0"></td>
+      </tr>
+    </tbody>
+  </table>
 
-  <p class="sec-title">🎯 Oportunidades & Contratos (D-1)</p>
-  <div class="grid grid-2">
-    <div class="field"><label>Oportunidades D-1</label><input type="number" id="opc-d1" min="0" value="0"></div>
-    <div class="field"><label>Contratos D-1</label><input type="number" id="con-d1" min="0" value="0"></div>
-  </div>
+  <p class="st">âï¸ AnÃ¡lises & Propostas D-1 â Dra. Pabla & Dr. Elias</p>
+  <table class="tbl">
+    <thead>
+      <tr><th>ResponsÃ¡vel</th><th>AnÃ¡lises D-1</th><th>Propostas D-1</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="rl">Dra. Pabla</td>
+        <td><input type="number" id="dc-pab-and1" min="0" value="0"></td>
+        <td><input type="number" id="dc-pab-prd1" min="0" value="0"></td>
+      </tr>
+      <tr>
+        <td class="rl">Dr. Elias</td>
+        <td><input type="number" id="dc-eli-and1" min="0" value="0"></td>
+        <td><input type="number" id="dc-eli-prd1" min="0" value="0"></td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
-<!-- ====== JURÍDICO ====== -->
-<div id="tab-jur" class="tab-pane">
+<!-- âââââââââââ JURÃDICO âââââââââââ -->
+<div id="pane-jur" class="pane">
 
-  <p class="sec-title">⚖️ Processos Ativos (D-1)</p>
-  <div class="grid grid-2">
-    <div class="field"><label>Processos Judiciais Ativos</label><input type="number" id="jur-proc-jud" min="0" value="0"></div>
-    <div class="field"><label>Processos Administrativos Ativos</label><input type="number" id="jur-proc-adm" min="0" value="0"></div>
+  <p class="st">âï¸ Processos (snapshot)</p>
+  <div class="g g3">
+    <div class="f"><label>Processos Judiciais Ativos</label><input type="number" id="j-pjud" min="0" value="0"></div>
+    <div class="f"><label>Processos Adm. Ativos</label><input type="number" id="j-padm" min="0" value="0"></div>
+    <div class="f"><label>MovimentaÃ§Ãµes Total D-1</label><input type="number" id="j-movd1" min="0" value="0"></div>
   </div>
 
-  <p class="sec-title">📋 Movimentação Processual D-1</p>
-  <div class="grid grid-4">
-    <div class="field"><label>ADM — Publicações D-1</label><input type="number" id="mov-adm-pub" min="0" value="0"></div>
-    <div class="field"><label>ADM — Movimento D-1</label><input type="number" id="mov-adm-mov" min="0" value="0"></div>
-    <div class="field"><label>JUD — Publicações D-1</label><input type="number" id="mov-jud-pub" min="0" value="0"></div>
-    <div class="field"><label>JUD — Movimento D-1</label><input type="number" id="mov-jud-mov" min="0" value="0"></div>
-  </div>
-  <div class="grid grid-2" style="margin-top:8px">
-    <div class="field"><label>Ajuizadas D-1</label><input type="number" id="mov-ajuiz-d1" min="0" value="0"></div>
+  <p class="st">ð MovimentaÃ§Ã£o Judicial D-1</p>
+  <div class="g" style="grid-template-columns:repeat(5,1fr)">
+    <div class="f"><label>PublicaÃ§Ãµes</label><input type="number" id="mj-pub" min="0" value="0"></div>
+    <div class="f"><label>Movimento</label><input type="number" id="mj-mov" min="0" value="0"></div>
+    <div class="f"><label>Pend. Ajuiz.</label><input type="number" id="mj-paj" min="0" value="0"></div>
+    <div class="f"><label>Ajuizados D-1</label><input type="number" id="mj-ajz" min="0" value="0"></div>
+    <div class="f"><label>Ativos (snapshot)</label><input type="number" id="mj-ati" min="0" value="0"></div>
   </div>
 
-  <p class="sec-title">✅ Compromissos por Responsável</p>
-  <table class="tbl-form">
+  <p class="st">ð MovimentaÃ§Ã£o Administrativa D-1</p>
+  <div class="g" style="grid-template-columns:repeat(5,1fr)">
+    <div class="f"><label>PublicaÃ§Ãµes</label><input type="number" id="ma-pub" min="0" value="0"></div>
+    <div class="f"><label>Movimento</label><input type="number" id="ma-mov" min="0" value="0"></div>
+    <div class="f"><label>Pend. Ajuiz.</label><input type="number" id="ma-paj" min="0" value="0"></div>
+    <div class="f"><label>Ajuizados D-1</label><input type="number" id="ma-ajz" min="0" value="0"></div>
+    <div class="f"><label>Ativos (snapshot)</label><input type="number" id="ma-ati" min="0" value="0"></div>
+  </div>
+
+  <p class="st">â Compromissos por ResponsÃ¡vel</p>
+  <table class="tbl">
     <thead>
       <tr>
-        <th>Responsável</th>
-        <th>Em Atraso</th>
+        <th>ResponsÃ¡vel</th>
+        <th>Atrasados</th>
         <th>Cumpridos D-1</th>
         <th>Comp. do Dia</th>
+        <th>Saldo (auto)</th>
         <th>Na Agenda</th>
+        <th>Taxa %</th>
       </tr>
     </thead>
-    <tbody>
-      <tr><td>Elias e Marlon</td><td><input type="number" id="jc-em-atras" min="0" value="0"></td><td><input type="number" id="jc-em-cump" min="0" value="0"></td><td><input type="number" id="jc-em-dia" min="0" value="0"></td><td><input type="number" id="jc-em-agenda" min="0" value="0"></td></tr>
-      <tr><td>Pabla</td><td><input type="number" id="jc-pb-atras" min="0" value="0"></td><td><input type="number" id="jc-pb-cump" min="0" value="0"></td><td><input type="number" id="jc-pb-dia" min="0" value="0"></td><td><input type="number" id="jc-pb-agenda" min="0" value="0"></td></tr>
-      <tr><td>Thamyres</td><td><input type="number" id="jc-th-atras" min="0" value="0"></td><td><input type="number" id="jc-th-cump" min="0" value="0"></td><td><input type="number" id="jc-th-dia" min="0" value="0"></td><td><input type="number" id="jc-th-agenda" min="0" value="0"></td></tr>
-      <tr><td>Debora</td><td><input type="number" id="jc-db-atras" min="0" value="0"></td><td><input type="number" id="jc-db-cump" min="0" value="0"></td><td><input type="number" id="jc-db-dia" min="0" value="0"></td><td><input type="number" id="jc-db-agenda" min="0" value="0"></td></tr>
-      <tr><td>Vinicius</td><td><input type="number" id="jc-vi-atras" min="0" value="0"></td><td><input type="number" id="jc-vi-cump" min="0" value="0"></td><td><input type="number" id="jc-vi-dia" min="0" value="0"></td><td><input type="number" id="jc-vi-agenda" min="0" value="0"></td></tr>
-      <tr><td>Leticia</td><td><input type="number" id="jc-le-atras" min="0" value="0"></td><td><input type="number" id="jc-le-cump" min="0" value="0"></td><td><input type="number" id="jc-le-dia" min="0" value="0"></td><td><input type="number" id="jc-le-agenda" min="0" value="0"></td></tr>
-      <tr><td>Graciele</td><td><input type="number" id="jc-gr-atras" min="0" value="0"></td><td><input type="number" id="jc-gr-cump" min="0" value="0"></td><td><input type="number" id="jc-gr-dia" min="0" value="0"></td><td><input type="number" id="jc-gr-agenda" min="0" value="0"></td></tr>
-      <tr><td>Comercial</td><td><input type="number" id="jc-co-atras" min="0" value="0"></td><td><input type="number" id="jc-co-cump" min="0" value="0"></td><td><input type="number" id="jc-co-dia" min="0" value="0"></td><td><input type="number" id="jc-co-agenda" min="0" value="0"></td></tr>
-      <tr><td>Secretaria</td><td><input type="number" id="jc-sc-atras" min="0" value="0"></td><td><input type="number" id="jc-sc-cump" min="0" value="0"></td><td><input type="number" id="jc-sc-dia" min="0" value="0"></td><td><input type="number" id="jc-sc-agenda" min="0" value="0"></td></tr>
-    </tbody>
+    <tbody id="jur-tbody"></tbody>
   </table>
 </div>
 
-<!-- FOOTER -->
-<div class="form-footer">
-  <div class="status-msg" id="status-msg">Preencha os campos e clique em Salvar Seção.</div>
-  <div style="display:flex;gap:8px">
-    <button class="btn btn-secondary" onclick="clearSection()">🗑 Limpar</button>
-    <button class="btn btn-secondary" onclick="exportJSON()" id="btn-export">⬇ Exportar JSON</button>
-    <button class="btn btn-primary" onclick="saveSection()" id="btn-save">💾 Salvar Seção</button>
+<footer class="footer">
+  <div class="finfo" id="finfo">Carregando...</div>
+  <div class="btns">
+    <button class="btn btn-o" onclick="loadYesterday()">ð¥ Carregar Ontem</button>
+    <button class="btn btn-p" id="btn-save" onclick="saveSection()">ð¾ Salvar SeÃ§Ã£o</button>
   </div>
-</div>
+</footer>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ── CONFIGURAÇÃO ──
-const SUPABASE_URL = 'https://ikhagxhavqcbuxrvahmv.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_3BWQS8bpUZ8hpPFNG1iCzQ_nPIUa-Pl';
+const SB_URL = 'https://ikhagxhavqcbuxrvahmv.supabase.co';
+const SB_KEY = 'sb_publishable_3BWQS8bpUZ8hpPFNG1iCzQ_nPIUa-Pl';
 
-// ── ESTADO ──
-let currentTab = 'mkt';
-let savedSections = {};
+const JUR_RESP = [
+  'Pabla','Thamyres','Elias e Marlon','Debora',
+  'Vinicius','Leticia','Graciele','Comercial','Secretaria'
+];
 
-// ── INIT ──
+function jid(resp) {
+  return resp.toLowerCase()
+    .normalize('NFD').replace(/[Ì-Í¯]/g,'')
+    .replace(/\s+/g,'').replace(/[^a-z]/g,'');
+}
+
+let curTab = 'mkt';
+let saved  = { mkt:false, com:false, jur:false };
+
 document.addEventListener('DOMContentLoaded', () => {
+  buildJurTable();
   const today = new Date().toISOString().split('T')[0];
-  document.getElementById('report-date').value = today;
-
-  const params = new URLSearchParams(window.location.search);
-  const area = params.get('area');
-  if (area && ['mkt','com','jur'].includes(area)) {
-    document.querySelectorAll('.tab-btn').forEach(b => {
-      if (!b.id.includes(area)) {
-        if (area !== 'all') b.style.display = 'none';
-      }
-    });
-    switchTab(area, document.getElementById('btn-' + area));
-    const labels = {mkt:'Marketing', com:'Comercial', jur:'Jurídico'};
-    document.getElementById('area-subtitle').textContent = labels[area] || 'Formulário';
-  }
-
-  loadDraft();
+  document.getElementById('rdate').value = today;
+  loadData(today);
 });
 
-// ── TABS ──
-function switchTab(id, btn) {
-  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-' + id).classList.add('active');
-  if (btn) btn.classList.add('active');
-  currentTab = id;
+function buildJurTable() {
+  document.getElementById('jur-tbody').innerHTML = JUR_RESP.map(r => {
+    const id = jid(r);
+    return `<tr>
+      <td class="rl">${r}</td>
+      <td><input type="number" id="jc-${id}-atr" min="0" value="0" oninput="calcSaldo('${id}')"></td>
+      <td><input type="number" id="jc-${id}-cum" min="0" value="0" oninput="calcSaldo('${id}')"></td>
+      <td><input type="number" id="jc-${id}-dia" min="0" value="0" oninput="calcSaldo('${id}')"></td>
+      <td><input type="number" id="jc-${id}-sal" class="calc" readonly></td>
+      <td><input type="number" id="jc-${id}-age" min="0" value="0"></td>
+      <td><input type="number" id="jc-${id}-tax" min="0" step="0.1" value="0"></td>
+    </tr>`;
+  }).join('');
 }
 
-// ── LER VALORES ──
-function v(id) {
+function switchTab(id) {
+  document.querySelectorAll('.pane').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.tb').forEach(b => b.classList.remove('on'));
+  document.getElementById('pane-' + id).classList.add('on');
+  document.getElementById('btn-' + id).classList.add('on');
+  curTab = id;
+  updateFooter();
+}
+
+function calcCPL(k) {
+  const cus = n(`tr-${k}-cus`), lea = n(`tr-${k}-lea`);
+  set(`tr-${k}-cpl`, lea > 0 ? +(cus/lea).toFixed(2) : 0);
+}
+function calcSaldo(id) {
+  set(`jc-${id}-sal`, n(`jc-${id}-atr`) - n(`jc-${id}-cum`) + n(`jc-${id}-dia`));
+}
+
+function n(id) {
   const el = document.getElementById(id);
   if (!el) return 0;
-  const val = parseFloat(el.value);
-  return isNaN(val) ? 0 : val;
+  const v = parseFloat(el.value);
+  return isNaN(v) ? 0 : v;
 }
-
 function set(id, val) {
   const el = document.getElementById(id);
-  if (el && val !== undefined && val !== null) el.value = val;
+  if (el) el.value = (val ?? 0);
+}
+function setLoad(on) {
+  document.getElementById('lbar').style.width = on ? '80%' : '0';
 }
 
-// ── COLETAR MARKETING ──
-function collectMarketing() {
-  const segPorRede = [
-    {rede:'Instagram',        d1:v('seg-ig-d1')},
-    {rede:'TikTok Dr. Elias', d1:v('seg-tte-d1')},
-    {rede:'TikTok Dr. Pabla', d1:v('seg-ttp-d1')},
-    {rede:'Facebook',         d1:v('seg-fb-d1')},
-    {rede:'YouTube',   d1:v('seg-yt-d1')},
-    {rede:'LinkedIn',  d1:v('seg-li-d1')},
-    {rede:'Outros',    d1:v('seg-outros-d1')},
-  ];
+async function fetchRow(table, date) {
+  const res = await fetch(
+    `${SB_URL}/rest/v1/${table}?date=eq.${date}&select=data`,
+    { headers: { apikey:SB_KEY, Authorization:`Bearer ${SB_KEY}` } }
+  );
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const rows = await res.json();
+  return rows?.[0]?.data || null;
+}
 
-  const leadsCanal = [
-    {canal:'Instagram',         d1:v('leads-ig-d1')},
-    {canal:'TikTok Dr. Elias',  d1:v('leads-tte-d1')},
-    {canal:'TikTok Dr. Pabla',  d1:v('leads-ttp-d1')},
-    {canal:'Google',            d1:v('leads-gg-d1')},
-    {canal:'Facebook',          d1:v('leads-fb-d1')},
-    {canal:'WhatsApp',          d1:v('leads-wa-d1')},
-    {canal:'Indicação',         d1:v('leads-ind-d1')},
-    {canal:'Orgânico',          d1:v('leads-org-d1')},
-    {canal:'Site',              d1:v('leads-site-d1')},
-    {canal:'Empresas',          d1:v('leads-emp-d1')},
-  ];
+async function loadData(date) {
+  setLoad(true);
+  clearForm();
+  saved = {mkt:false,com:false,jur:false};
+  updatePills();
+  try {
+    const [mkt, com, jur] = await Promise.all([
+      fetchRow('marketing', date),
+      fetchRow('comercial', date),
+      fetchRow('juridico',  date)
+    ]);
+    let any = false;
+    if (mkt) { populateMkt(mkt); saved.mkt = true; any = true; }
+    if (com) { populateCom(com); saved.com = true; any = true; }
+    if (jur) { populateJur(jur); saved.jur = true; any = true; }
+    updatePills();
+    if (!any) showInfo(`Sem dados para ${date}. Use "Carregar Ontem" como base.`);
+  } catch(e) {
+    showToast('Erro ao carregar: ' + e.message, 'err');
+  }
+  setLoad(false);
+  updateFooter();
+}
 
-  const leadsFonte = [
-    {fonte:'TikTok Dr. Elias', meta:16, d1:v('lq-tte-d1')},
-    {fonte:'TikTok Dr. Pabla', meta:16, d1:v('lq-ttp-d1')},
-    {fonte:'Instagram',        meta:0,  d1:v('lq-ig-d1')},
-    {fonte:'Google Ads',       meta:0,  d1:v('lq-gg-d1')},
-    {fonte:'WhatsApp',         meta:0,  d1:v('lq-wa-d1')},
-    {fonte:'Empresas',         meta:0,  d1:v('lq-emp-d1')},
-    {fonte:'Indicação',        meta:14, d1:v('lq-ind-d1')},
-    {fonte:'Orgânico',         meta:0,  d1:v('lq-org-d1')},
-    {fonte:'Outros Meios',     meta:0,  d1:v('lq-outros-d1')},
-  ];
+async function loadYesterday() {
+  const date = document.getElementById('rdate').value;
+  const d = new Date(date + 'T12:00:00Z');
+  d.setDate(d.getDate() - 1);
+  const yesterday = d.toISOString().split('T')[0];
+  setLoad(true);
+  try {
+    const [mkt, com, jur] = await Promise.all([
+      fetchRow(marketing', yesterday),
+      fetchRow('comercial', yesterday),
+      fetchRow('juridico',  yesterday)
+    ]);
+    if (mkt) populateMkt(mkt);
+    if (com) populateCom(com);
+    if (jur) populateJur(jur);
+    saved = {mkt:false,com:false,jur:false};
+    updatePills();
+    showToast(`Base de ${yesterday} carregada. Atualize e salve.`, 'warn');
+  } catch(e) {
+    showToast('Erro: ' + e.message, 'err');
+  }
+  setLoad(false);
+}
 
-  const lqD1  = leadsFonte.reduce((s,m) => s + m.d1, 0);
-  const segD1 = segPorRede.reduce((s,r) => s + r.d1, 0);
+function onDateChange() { loadData(document.getElementById('rdate').value); }
 
+// ââ POPULATE ââââââââââââââââââââââââââââââââââââââââ
+function populateMkt(d) {
+  set('m-lqd1', d.leadsQualD1);
+  set('m-seg',  d.seguidoresD1);
+
+  const km = {Google:'gg', Meta:'mt',TikTok:'tt',LinkedIn:'li'};
+  (d.trafego||[]).forEach(t => {
+    const k = km[t.canal]; if (!k) return;
+    set(`tr-${k}-cus`, t.custoD1);
+    set(`tr-${k}-lea`, t.leadsD1);
+    set(`tr-${k}-cpl`, t.cplD1);
+  });
+
+  const kl = {'TikTok Dr. Pabla':'ttp','TikTok Dr. Elias':'tte',Instagram:'ig',Facebook:'fb',Google:'gg','IndicaÃ§Ã£o':'ind','Outros Meios':'out'};
+  (d.leadsCanal||[]).forEach(lc => {
+    const k = kl[lc.fonte]; if (!k) return;
+    set(`lc-${k}-d1`, lc.d1);
+  });
+
+  const klq = kl;
+  (d.leadsQualCanal||[]).forEach(lq => {
+    const k = klq[lq.fonte]; if (!k) return;
+    set(`lq-${k}-d1`, lq.d1);
+  });
+
+  const kr = {
+    'Facebook Mendes Paniago':'fbmp','Facebook Elias':'fbe','Facebook Pabla':'fbp',
+    'Instagram Mendes Paniago':'igmp','Instagram Elias':'ige','Instagram Pabla':'igp',
+    'TT - Pabla':'ttp','TT - Elias':'tte','TT - Mendes Paniago':'ttmp',
+    'LinkedIn - Mendes Paniago':'limp','YouTube':'yt'
+  };
+  (d.redesSociais||[]).forEach(rs => {
+    const k = kr[rs.perfil]; if (!k) return;
+    set(`rs-${k}-pd1`, rs.postagemD1);
+    set(`rs-${k}-sd1`, rs.storiesD1);
+  });
+}
+
+function populateCom(d) {
+  set('c-opd1', d.oportunidadesD1);
+  set('c-ctd1', d.contratosD1);
+
+  const ke = {Patricia:'pat',Marielle:'mar'};
+  (d.equipe||[]).forEach(e => {
+    const k = ke[e.nome]; if (!k) return;
+    set(`eq-${k}-td1`, e.tentD1);
+    set(`eq-${k}-ed1`, e.efetD1);
+    set(`eq-${k}-fd1`, e.facD1);
+  });
+
+  const kd = {Graciele:'gra',Marielle:'mar'};
+  (d.documentacao||[]).forEach(dc => {
+    const k = kd[dc.responsavel];
+    if (k) {
+      set(`dc-${k}-ctd1`, dc.contatoD1);
+      set(`dc-${k}-dfd1`, dc.docD1);
+      set(`dc-${k}-and1`, dc.analisesD1);
+      set(`dc-${k}-prd1`, dc.propostasD1);
+    }
+  });
+
+  const kp = {'Dra. Pabla':'pab','Dr. Elias':'eli'};
+  (d.analisesPropostas||[]).forEach(ap => {
+    const k = kp[ap.responsavel]; if (!k) return;
+    set(`dc-${k}-and1`, ap.analisesD1);
+    set(`dc-${k}-prd1`, ap.propostasD1);
+  });
+}
+
+function populateJur(d) {
+  set('j-pjud',  d.processosJudicial);
+  set('j-padm',  d.processosAdm);
+  set('j-movd1', d.movD1);
+
+  const mj = d.movimentacao?.judicial||{};
+  set('mj-pub',mj.publicacoes); set('mj-mov',mj.movimento);
+  set('mj-paj',mj.pendAjuiz);  set('mj-ajz',mj.ajuizados); set('mj-ati',mj.ativos);
+
+  const ma = d.movimentacao?.adm||{};
+  set('ma-pub',ma.publicacoes); set('ma-mov',ma.movimento);
+  set('ma-paj',ma.pendAjuiz);  set('ma-ajz',ma.ajuizados); set('ma-ati',ma.ativos);
+
+  (d.compromissos||[]).forEach(c => {
+    const id = jid(c.resp);
+    set(`jc-${id}-atr`, c.atrasados);
+    set(`jc-${id}-cum`, c.cumpridosD1);
+    set(`jc-${id}-dia`, c.compDia);
+    set(`jc-${id}-sal`, c.saldo);
+    set(`jc-${id}-age`, c.agenda);
+    set(`jc-${id}-tax`, c.taxa);
+  });
+}
+
+// ââ BUILD JSON ââââââââââââââââââââââââââââââââââââââââ
+function buildMkt() {
   return {
-    seguidoresMeta: 1554,
-    seguidoresD1: segD1,
-    seguidoresPorRede: segPorRede,
-    leadsQualMeta: 62,
-    leadsQualD1: lqD1,
-    leadsCanal,
-    leadsFonte,
+    leadsQualD1:  n('m-lqd1'),
+    seguidoresD1: n('m-seg'),
     trafego: [
-      {canal:'Google',  orcamento:2375, custoD1:v('tr-gg-custo'), cliques:v('tr-gg-cli'), cpc:v('tr-gg-cpc'), leads:v('tr-gg-leads'), cpl:v('tr-gg-cpl')},
-      {canal:'Meta',    orcamento:2375, custoD1:v('tr-mt-custo'), cliques:v('tr-mt-cli'), cpc:v('tr-mt-cpc'), leads:v('tr-mt-leads'), cpl:v('tr-mt-cpl')},
-      {canal:'TikTok',  orcamento:2375, custoD1:v('tr-tt-custo'), cliques:v('tr-tt-cli'), cpc:v('tr-tt-cpc'), leads:v('tr-tt-leads'), cpl:v('tr-tt-cpl')},
-      {canal:'LinkedIn',orcamento:2375, custoD1:v('tr-li-custo'), cliques:v('tr-li-cli'), cpc:v('tr-li-cpc'), leads:v('tr-li-leads'), cpl:v('tr-li-cpl')},
+      {canal:'Google',   custoD1:n('tr-gg-cus'), leadsD1:n('tr-gg-lea'), cplD1:n('tr-gg-cpl')},
+      {canal:'Meta',     custoD1:n('tr-mt-cus'), leadsD1:n('tr-mt-lea'), cplD1:n('tr-mt-cpl')},
+      {canal:'TikTok',   custoD1:n('tr-tt-cus'), leadsD1:n('tr-tt-lea'), cplD1:n('tr-tt-cpl')},
+      {canal:'LinkedIn', custoD1:n('tr-li-cus'), leadsD1:n('tr-li-lea'), cplD1:n('tr-li-cpl')}
+    ],
+    leadsCanal: [
+      {fonte:'TikTok Dr. Pabla', d1:n('lc-ttp-d1')},
+      {fonte:'TikTok Dr. Elias', d1:n('lc-tte-d1')},
+      {fonte:'Instagram',        d1:n('lc-ig-d1')},
+      {fonte:'Facebook',         d1:n('lc-fb-d1')},
+      {fonte:'Google',           d1:n('lc-gg-d1')},
+      {fonte:'IndicaÃ§Ã£o',        d1:n('lc-ind-d1')},
+      {fonte:'Outros Meios',     d1:n('lc-out-d1')}
+    ],
+    leadsQualCanal: [
+      {fonte:'TikTok Dr. Pabla', d1:n('lq-ttp-d1')},
+      {fonte:'TikTok Dr. Elias', d1:n('lq-tte-d1')},
+      {fonte:'Instagram',        d1:n('lq-ig-d1')},
+      {fonte:'Facebook',         d1:n('lq-fb-d1')},
+      {fonte:'Google',           d1:n('lq-gg-d1')},
+      {fonte:'IndicaÃ§Ã£o',        d1:n('lq-ind-d1')},
+      {fonte:'Outros Meios',     d1:n('lq-out-d1')}
     ],
     redesSociais: [
-      {rede:'Facebook Mendes', resp:'Mendes', feedObj:5,  feedD1:v('rs-fbm-fd1'), storiesObj:15, storiesD1:v('rs-fbm-sd1')},
-      {rede:'Facebook Elias',  resp:'Elias',  feedObj:5,  feedD1:v('rs-fbe-fd1'), storiesObj:15, storiesD1:v('rs-fbe-sd1')},
-      {rede:'Facebook Pabla',  resp:'Pabla',  feedObj:5,  feedD1:v('rs-fbp-fd1'), storiesObj:15, storiesD1:v('rs-fbp-sd1')},
-      {rede:'Instagram Mendes',resp:'Mendes', feedObj:5,  feedD1:v('rs-igm-fd1'), storiesObj:15, storiesD1:v('rs-igm-sd1')},
-      {rede:'Instagram Elias', resp:'Elias',  feedObj:5,  feedD1:v('rs-ige-fd1'), storiesObj:15, storiesD1:v('rs-ige-sd1')},
-      {rede:'Instagram Pabla', resp:'Pabla',  feedObj:5,  feedD1:v('rs-igp-fd1'), storiesObj:15, storiesD1:v('rs-igp-sd1')},
-      {rede:'TT Pabla',        resp:'Pabla',  feedObj:5,  feedD1:v('rs-ttp-fd1'), storiesObj:15, storiesD1:v('rs-ttp-sd1')},
-      {rede:'TT Elias',        resp:'Elias',  feedObj:5,  feedD1:v('rs-tte-fd1'), storiesObj:15, storiesD1:v('rs-tte-sd1')},
-      {rede:'TT Mendes Paniago',resp:'Mendes',feedObj:5,  feedD1:v('rs-ttm-fd1'), storiesObj:15, storiesD1:v('rs-ttm-sd1')},
-      {rede:'LinkedIn Mendes', resp:'Mendes', feedObj:5,  feedD1:v('rs-lim-fd1'), storiesObj:15, storiesD1:v('rs-lim-sd1')},
-      {rede:'YouTube',         resp:'Mendes', feedObj:15, feedD1:v('rs-yt-fd1'),  storiesObj:15, storiesD1:v('rs-yt-sd1')},
-    ],
-    trendLeads:  [0,0,0,0,0,0,0],
-    trendQualif: [0,0,0,0,0,0,0],
+      {perfil:'Facebook Mendes Paniago',   postagemD1:n('rs-fbmp-pd1'), storiesD1:n('rs-fbmp-sd1')},
+      {perfil:'Facebook Elias',            postagemD1:n('rs-fbe-pd1'),  storiesD1:n('rs-fbe-sd1')},
+      {perfil:'Facebook Pabla',            postagemD1:n('rs-fbp-pd1'),  storiesD1:n('rs-fbp-sd1')},
+      {perfil:'Instagram Mendes Paniago',  postagemD1:n('rs-igmp-pd1'), storiesD1:n('rs-igmp-sd1')},
+      {perfil:'Instagram Elias',           postagemD1:n('rs-ige-pd1'),  storiesD1:n('rs-ige-sd1')},
+      {perfil:'Instagram Pabla',           postagemD1:n('rs-igp-pd1'),  storiesD1:n('rs-igp-sd1')},
+      {perfil:'TT - Pabla',               postagemD1:n('rs-ttp-pd1'),  storiesD1:n('rs-ttp-sd1')},
+      {perfil:'TT - Elias',               postagemD1:n('rs-tte-pd1'),  storiesD1:n('rs-tte-sd1')},
+      {perfil:'TT - Mendes Paniago',      postagemD1:n('rs-ttmp-pd1'), storiesD1:n('rs-ttmp-sd1')},
+      {perfil:'LinkedIn - Mendes Paniago', postagemD1:n('rs-limp-pd1'), storiesD1:n('rs-limp-sd1')},
+      {perfil:'YouTube',                  postagemD1:n('rs-yt-pd1'),   storiesD1:n('rs-yt-sd1')}
+    ]
   };
 }
 
-// ── COLETAR COMERCIAL ──
-function collectComercial() {
+function buildCom() {
   return {
+    oportunidadesD1: n('c-opd1'),
+    contratosD1:     n('c-ctd1'),
     equipe: [
-      {nome:'Patricia', tentD1:v('com-pat-tent'), efetD1:v('com-pat-efet'), facD1:v('com-pat-fac')},
-      {nome:'Marielle', tentD1:v('com-mar-tent'), efetD1:v('com-mar-efet'), facD1:v('com-mar-fac')},
+      {nome:'Patricia', tentD1:n('tr-pat-td1'), efetD1:n('tr-pat-ed1'), facD1:n('eq-pat-fd1')},
+      {nome:'Marielle', tentD1:n('tr-mar-td1'), efetD1:n('tr-mar-ed1'), facD1:n('eq-mar-fd1')}
     ],
     documentacao: [
-      {responsavel:'Graciele', contatoD1:v('doc-gra-cont'), docD1:v('doc-gra-doc'), analisesD1:v('doc-gra-anal')},
-      {responsavel:'Marielle', contatoD1:v('doc-mar-cont'), docD1:v('doc-mar-doc'), analisesD1:v('doc-mar-anal')},
+      {responsavel:'Graciele', contatoD1:n('tr-gra-ctd1'), docD1:n('tr-gra-dfd1'), analisesD1:n('tr-gra-and1'), propostasD1:n('tr-gra-prd1')},
+      {responsavel:'Marielle', contatoD1:n('dc-mar-ctd1'), docD1:n('dc-mar-dfd1'), analisesD1:n('dc-mar-and1'), propostasD1:n('dc-mar-prd1')}
     ],
-    analiseEquipe: [
-      {nome:'Pabla', analisesD1:v('doc-pab-anal'), propostasD1:v('doc-pab-prop')},
-      {nome:'Elias', analisesD1:v('doc-eli-anal'), propostasD1:v('doc-eli-prop')},
-    ],
-    oportunidadesMeta: 27, oportunidadesD1: v('opc-d1'),
-    contratosMeta: 16,     contratosD1: v('con-d1'),
+    analisesPropostas: [
+      {responsavel:'Dra. Pabla', analisesD1:n('dc-pab-and1'), propostasD1:n('dc-pab-prd1')},
+      {responsavel:'Dr. Elias',  analisesD1:n('dc-eli-and1'), propostasD1:n('dc-eli-prd1')}
+    ]
   };
 }
 
-// ── COLETAR JURÍDICO ──
-function collectJuridico() {
-  function comp(resp, pfx) {
-    return {
-      resp,
-      emAtraso:  v(pfx + '-atras'),
-      cumpridos: v(pfx + '-cump'),
-      doDia:     v(pfx + '-dia'),
-      naAgenda:  v(pfx + '-agenda'),
-    };
-  }
+function buildJur() {
   return {
-    processosJud: v('jur-proc-jud'),
-    processosAdm: v('jur-proc-adm'),
-    movAdmPub:    v('mov-adm-pub'),
-    movAdmMov:    v('mov-adm-mov'),
-    movJudPub:    v('mov-jud-pub'),
-    movJudMov:    v('mov-jud-mov'),
-    movAjuizadas: v('mov-ajuiz-d1'),
-    compromissos: [
-      comp('Elias e Marlon', 'jc-em'),
-      comp('Pabla',          'jc-pb'),
-      comp('Thamyres',       'jc-th'),
-      comp('Debora',         'jc-db'),
-      comp('Vinicius',       'jc-vi'),
-      comp('Leticia',        'jc-le'),
-      comp('Graciele',       'jc-gr'),
-      comp('Comercial',      'jc-co'),
-      comp('Secretaria',     'jc-sc'),
-    ],
+    processosJudicial: n('j-pjud'),
+    processosAdm:      n('j-padm'),
+    movD1:             n('j-movd1'),
+    movimentacao: {
+      judicial: {publicacoes:n('mj-pub'),movimento:n('mj-mov'),pendAjuiz:n('mj-paj'),ajuizados:n('mj-ajz'),ativos:n('mj-ati')},
+      adm:      {publicacoes:n('ma-pub'),movimento:n('ma-mov'),pendAjuiz:n('ma-paj'),ajuizados:n('ma-ajz'),ativos:n('ma-ati')}
+    },
+    compromissos: JUR_RESP.map(resp => {
+      const id = jid(resp);
+      return {
+        resp,
+        atrasados:   n(`jc-${id}-atr`),
+        cumpridosD1: n(`jc-${id}-cum`),
+        compDia:     n(`jc-${id}-dia`),
+        saldo:       n(`jc-${id}-sal`),
+        agenda:      n(`jc-${id}-age`),
+        taxa:        n(`jc-${id}-tax`)
+      };
+    })
   };
 }
 
-// -- SALVAR --
+// ââ SAVE âââââââââââââââââââââââââââââââââââââââââââââ
 async function saveSection() {
+  const date = document.getElementById('rdate').value;
+  if (!date) { showToast('Selecione uma data.', 'err'); return; }
+
   const btn = document.getElementById('btn-save');
-  const date = document.getElementById('report-date').value;
-  if (!date) { showToast('Selecione uma data!', 'r'); return; }
-  let payload = { date, area: currentTab };
-  if (currentTab === 'mkt') payload.marketing = collectMarketing();
-  if (currentTab === 'com') payload.comercial  = collectComercial();
-  if (currentTab === 'jur') payload.juridico   = collectJuridico();
-  savedSections[currentTab] = payload;
-  try { localStorage.setItem('formulario_draft_' + date, JSON.stringify(savedSections)); } catch(e) {}
-  btn.disabled = true; btn.textContent = 'Salvando...';
-  document.getElementById('status-msg').textContent = 'Enviando dados...';
-  try {
-    const tableMap = { mkt: 'marketing', com: 'comercial', jur: 'juridico' };
-    const dataMap  = { mkt: 'marketing', com: 'comercial', jur: 'juridico' };
-    const table  = tableMap[currentTab];
-    const record = { date, data: payload[dataMap[currentTab]] };
+  btn.disabled = true;
 
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'Prefer': 'resolution=merge-duplicates'
+  const cfg = {
+    mkt:{table:'marketing', build:buildMkt},
+    com:{table:'comercial', build:buildCom},
+    jur:{table:'juridico',  build:buildJur}
+  }[curTab];
+
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/${cfg.table}`, {
+      method:'POST',
+      headers:{
+        apikey:SB_KEY,
+        Authorization:`Bearer ${SB_KEY}`,
+        'Content-Type':'application/json',
+        Prefer:'resolution=merge-duplicates'
       },
-      body: JSON.stringify(record)
+      body: JSON.stringify({date, data:cfg.build()})
     });
-
-    if (!res.ok) {
-      const errText = await res.text();
-      throw new Error(`HTTP ${res.status}: ${errText}`);
-    }
-
-    showToast('Secao salva!', 'g');
-    document.getElementById('status-msg').textContent = 'Salvo em ' + new Date().toLocaleTimeString('pt-BR');
+    if (!res.ok) throw new Error(Nawait res.text());
+    saved[curTab] = true;
+    updatePills();
+    const labels = {mkt:'Marketing',com:'Comercial',jur:'JurÃ­dico'};
+    showToast(`â ${labels[curTab]} salvo!`, 'ok');
+    updateFooter();
   } catch(e) {
-    console.error('Erro Supabase:', e);
-    showToast('Erro ao salvar: ' + e.message, 'r');
-    document.getElementById('status-msg').textContent = 'Erro ao salvar.';
-  } finally { btn.disabled = false; btn.textContent = 'Salvar Secao'; }
+    showToast('â Erro: ' + e.message, 'err');
+  }
+  btn.disabled = false;
 }
 
-function clearSection() {
-  if (!confirm('Limpar campos desta secao?')) return;
-  document.querySelectorAll('#tab-' + currentTab + ' input').forEach(i => { i.value = 0; });
-  showToast('Secao limpa.', '');
+// ââ UI ââââââââââââââââââââââââââââââââââââââââââââââââ
+function updatePills() {
+  ['mkt','com','jur'].forEach(k => {
+    document.getElementById('pill-'+k).className = 'pill' + (saved[k] ? ' ok' : '');
+  });
 }
-
-function exportJSON() {
-  const date = document.getElementById('report-date').value || 'sem-data';
-  const all = { date, marketing:collectMarketing(), comercial:collectComercial(), juridico:collectJuridico() };
-  const blob = new Blob([JSON.stringify(all, null, 2)], {type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'relatorio-' + date + '.json';
-  a.click();
+function updateFooter() {
+  const labels = {mkt:'Marketing',com:'Comercial',jur:'JurÃ­dico'};
+  const all = saved.mkt && saved.com && saved.jur;
+  document.getElementById('finfo').innerHTML =
+    `SeÃ§Ã£o: <strong style="color:var(--gold)">${labels[curTab]}</strong>` +
+    (all ? ' &nbsp;Â·&nbsp; <span style="color:var(--green)">â Tudo salvo</span>' : '');
 }
-
-function loadDraft() {
-  const date = document.getElementById('report-date').value;
-  if (!date) return;
-  try {
-    const stored = localStorage.getItem('formulario_draft_' + date);
-    if (!stored) return;
-    savedSections = JSON.parse(stored);
-    if (savedSections.mkt && savedSections.mkt.marketing) applyMarketing(savedSections.mkt.marketing);
-    if (savedSections.com && savedSections.com.comercial) applyComercial(savedSections.com.comercial);
-    if (savedSections.jur && savedSections.jur.juridico)  applyJuridico(savedSections.jur.juridico);
-  } catch(e) {}
+function clearForm() {
+  document.querySelectorAll('input[type=number]').forEach(el => { el.value = 0; });
 }
-
-function applyMarketing(d) {
-  if (!d) return;
-  const rsMap = {'Facebook Mendes':'fbm','Facebook Elias':'fbe','Facebook Pabla':'fbp','Instagram Mendes':'igm','Instagram Elias':'ige','Instagram Pabla':'igp','TT Pabla':'ttp','TT Elias':'tte','TT Mendes Paniago':'ttm','LinkedIn Mendes':'lim','YouTube':'yt'};
-  (d.redesSociais||[]).forEach(r => { const k=rsMap[r.rede]; if(!k) return; set('rs-'+k+'-fd1',r.feedD1); set('rs-'+k+'-sd1',r.storiesD1); });
-  (d.seguidoresPorRede||[]).forEach(r => { const k={Instagram:'ig','TikTok Dr. Elias':'tte','TikTok Dr. Pabla':'ttp',Facebook:'fb',YouTube:'yt',LinkedIn:'li',Outros:'outros'}[r.rede]; if(k) set('seg-'+k+'-d1',r.d1); });
-  (d.leadsCanal||[]).forEach(r => { const k={Instagram:'ig','TikTok Dr. Elias':'tte','TikTok Dr. Pabla':'ttp',Google:'gg',Facebook:'fb',WhatsApp:'wa','Indicacao':'ind','Organico':'org',Site:'site',Empresas:'emp'}[r.canal]; if(k) set('leads-'+k+'-d1',r.d1); });
-  (d.leadsFonte||[]).forEach(r => { const k={'TikTok Dr. Elias':'tte','TikTok Dr. Pabla':'ttp',Instagram:'ig','Google Ads':'gg',WhatsApp:'wa',Empresas:'emp','Indicacao':'ind','Organico':'org','Outros Meios':'outros'}[r.fonte]; if(k) set('lq-'+k+'-d1',r.d1); });
-  (d.trafego||[]).forEach(r => { const k={Google:'gg',Meta:'mt',TikTok:'tt',LinkedIn:'li'}[r.canal]; if(k) { set('tr-'+k+'-custo',r.custoD1); set('tr-'+k+'-cli',r.cliques); set('tr-'+k+'-cpc',r.cpc); set('tr-'+k+'-leads',r.leads); set('tr-'+k+'-cpl',r.cpl); } });
+function showInfo(msg) {
+  const el = document.getElementById('info-box');
+  if (!el) return;
+  el.textContent = msg; el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 6000);
 }
-function applyComercial(d) {
-  if (!d) return;
-  (d.equipe||[]).forEach(p => { const k={Patricia:'pat',Marielle:'mar'}[p.nome]; if(!k) return; set('com-'+k+'-tent',p.tentD1); set('com-'+k+'-efet',p.efetD1); set('com-'+k+'-fac',p.facD1); });
-  (d.documentacao||[]).forEach(r => { const k={Graciele:'gra',Marielle:'mar'}[r.responsavel]; if(!k) return; set('doc-'+k+'-cont',r.contatoD1); set('doc-'+k+'-doc',r.docD1); set('doc-'+k+'-anal',r.analisesD1); });
-  (d.analiseEquipe||[]).forEach(p => { const k={Pabla:'pab',Elias:'eli'}[p.nome]; if(!k) return; set('doc-'+k+'-anal',p.analisesD1); set('doc-'+k+'-prop',p.propostasD1); });
-  set('opc-d1',d.oportunidadesD1); set('con-d1',d.contratosD1);
+let toastTimer;
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (type||'');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.className = 'toast', 3500);
 }
-function applyJuridico(d) {
-  if (!d) return;
-  set('jur-proc-jud',d.processosJud); set('jur-proc-adm',d.processosAdm);
-  set('mov-adm-pub',d.movAdmPub); set('mov-adm-mov',d.movAdmMov); set('mov-jud-pub',d.movJudPub); set('mov-jud-mov',d.movJudMov); set('mov-ajuiz-d1',d.movAjuizadas);
-  const pfxMap={'Elias e Marlon':'em',Pabla:'pb',Thamyres:'th',Debora:'db',Vinicius:'vi',Leticia:'le',Graciele:'gr',Comercial:'co',Secretaria:'sc'};
-  (d.compromissos||[]).forEach(c => { const k=pfxMap[c.resp]; if(!k) return; set('jc-'+k+'-atras',c.emAtraso); set('jc-'+k+'-cump',c.cumpridos); set('jc-'+k+'-dia',c.doDia); set('jc-'+k+'-agenda',c.naAgenda); });
-}
-function set(id, val) { const el=document.getElementById(id); if(el && val!==undefined && val!==null) el.value=val; }
-function showToast(msg, type) { const t=document.getElementById('toast'); t.textContent=msg; t.className='toast show'+(type?' '+type:''); setTimeout(()=>{t.className='toast';},3000); }
 </script>
 </body>
 </html>
