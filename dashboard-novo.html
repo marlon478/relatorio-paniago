@@ -912,6 +912,7 @@ function applyStaleWarnings(stale) {
 // ============================================================
 function renderGeral(d, prev) {
   const mkt = d.marketing; const com = d.comercial;
+  if (!mkt || !com || !com.equipe) return; // guard: data parcial
   const totalInvest     = mkt.trafego.reduce((s,t)=>s+t.custoMes,0);
   const totalLeadsTraf  = mkt.trafego.reduce((s,t)=>s+t.leads,0);          // para CPL (plataformas)
   // totalLeads: usa leadsCanal (granular) se disponível, senão leadsFonte (retrocompat)
@@ -992,6 +993,7 @@ function renderGeral(d, prev) {
 // ============================================================
 function renderMarketing(d, prev) {
   const mkt = d.marketing;
+  if (!mkt || !mkt.trafego) return;
   const totalLeads = mkt.trafego.reduce((s,t)=>s+t.leads,0);
   const totalInvest = mkt.trafego.reduce((s,t)=>s+t.custoMes,0);
   const cplMed = totalLeads ? totalInvest/totalLeads : 0;
@@ -1037,6 +1039,7 @@ function renderMarketing(d, prev) {
 // ============================================================
 function renderComercial(d, prev) {
   const com = d.comercial;
+  if (!com || !com.equipe) return;
   const totalTentD1 = com.equipe.reduce((s,e)=>s+e.tentD1,0);
   const totalEfetD1 = com.equipe.reduce((s,e)=>s+e.efetD1,0);
   const totalDocD1  = com.documentacao.reduce((s,d)=>s+d.docD1,0);
@@ -1075,6 +1078,7 @@ function renderComercial(d, prev) {
 // ============================================================
 function renderJuridico(d, prev) {
   const jur = d.juridico;
+  if (!jur) return;
   // Processos ativos: campo direto do PDF (D-1 ativos)
   // Se zerado, busca último valor não-zero no histórico (PDF não preenchido)
   let totalJudicial = jur.processosJudicial || 0;
