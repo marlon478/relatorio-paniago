@@ -678,7 +678,7 @@ async function saveSection() {
       },
       body: JSON.stringify({date, data:cfg.build()})
     });
-    if (!res.ok) throw new Error(Nawait res.text());
+    if (!res.ok) throw new Error(await res.text());
     saved[curTab] = true;
     updatePills();
     const labels = {mkt:'Marketing',com:'Comercial',jur:'Jurídico'};
