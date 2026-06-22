@@ -119,7 +119,16 @@ body{background:var(--navy);color:var(--cream);font-family:'Segoe UI',Arial,sans
   <p class="st">📊 Geral D-1</p>
   <div class="g g2">
     <div class="f"><label>Leads Qualificados D-1</label><input type="number" id="m-lqd1" min="0" value="0"></div>
-    <div class="f"><label>Seguidores (snapshot)</label><input type="number" id="m-seg" min="0" value="0"></div>
+    <div class="f"><label>Total Seguidores <small style="color:#7af;font-weight:normal">(calculado)</small></label><input type="number" id="m-seg-total" readonly style="background:rgba(255,255,255,.05);cursor:default" value="0"></div>
+  </div>
+  <p class="st">👥 Seguidores por Rede Social</p>
+  <div class="g g3">
+    <div class="f"><label>Instagram</label><input type="number" id="seg-ig" min="0" value="0" oninput="calcSegTotal()"></div>
+    <div class="f"><label>TikTok Elias</label><input type="number" id="seg-tte" min="0" value="0" oninput="calcSegTotal()"></div>
+    <div class="f"><label>TikTok Pabla</label><input type="number" id="seg-ttp" min="0" value="0" oninput="calcSegTotal()"></div>
+    <div class="f"><label>Facebook</label><input type="number" id="seg-fb" min="0" value="0" oninput="calcSegTotal()"></div>
+    <div class="f"><label>LinkedIn</label><input type="number" id="seg-li" min="0" value="0" oninput="calcSegTotal()"></div>
+    <div class="f"><label>YouTube</label><input type="number" id="seg-yt" min="0" value="0" oninput="calcSegTotal()"></div>
   </div>
 
   <p class="st">💰 Tráfego Pago D-1</p>
@@ -475,7 +484,9 @@ function onDateChange() { loadData(document.getElementById('rdate').value); }
 // ── POPULATE ─────────────────────────────────────────
 function populateMkt(d) {
   set('m-lqd1', d.leadsQualD1);
-  set('m-seg',  d.seguidoresD1);
+  const spMap = {Instagram:'seg-ig','TikTok Elias':'seg-tte','TikTok Pabla':'seg-ttp',Facebook:'seg-fb',LinkedIn:'seg-li',YouTube:'seg-yt'};
+  (d.seguidoresPorRede||[]).forEach(s => { if (spMap[s.rede]) set(spMap[s.rede], s.seguidores); });
+  calcSegTotal();
 
   const km = {Google:'gg',Meta:'mt',TikTok:'tt',LinkedIn:'li'};
   (d.trafego||[]).forEach(t => {
@@ -565,11 +576,25 @@ function populateJur(d) {
   });
 }
 
+function calcSegTotal() {
+  const total = ['seg-ig','seg-tte','seg-ttp','seg-fb','seg-li','seg-yt'].reduce((s,id)=>s+n(id),0);
+  const el = document.getElementById('m-seg-total');
+  if (el) el.value = total;
+}
+
 // ── BUILD JSON ────────────────────────────────────────
 function buildMkt() {
   return {
     leadsQualD1:  n('m-lqd1'),
-    seguidoresD1: n('m-seg'),
+    seguidoresPorRede: [
+      {rede:'Instagram',    seguidores: n('seg-ig')},
+      {rede:'TikTok Elias', seguidores: n('seg-tte')},
+      {rede:'TikTok Pabla', seguidores: n('seg-ttp')},
+      {rede:'Facebook',     seguidores: n('seg-fb')},
+      {rede:'LinkedIn',     seguidores: n('seg-li')},
+      {rede:'YouTube',      seguidores: n('seg-yt')}
+    ],
+    seguidoresD1: ['seg-ig','seg-tte','seg-ttp','seg-fb','seg-li','seg-yt'].reduce((s,id)=>s+n(id),0),
     trafego: [
       {canal:'Google',   custoD1:n('tr-gg-cus'), leadsD1:n('tr-gg-lea'), cplD1:n('tr-gg-cpl')},
       {canal:'Meta',     custoD1:n('tr-mt-cus'), leadsD1:n('tr-mt-lea'), cplD1:n('tr-mt-cpl')},
