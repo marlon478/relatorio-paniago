@@ -642,10 +642,20 @@ function mkLine2(id,labels,ds){
     }
   }});
 }
-const METAS={opt:48,ct:19}; // ← ajuste as metas mensais aqui
+// Metas por mes (chave: 'AAAA-MM'). Para um novo mes, e so adicionar uma linha.
+const METAS_MES = {
+  '2026-07': {opt:48, ct:19},
+  // '2026-08': {opt:50, ct:20},
+};
+const METAS_PADRAO = {opt:48, ct:19};
+function getMetas(dt){
+  const chave = dt.getFullYear() + '-' + String(dt.getMonth()+1).padStart(2,'0');
+  return METAS_MES[chave] || METAS_PADRAO;
+}
 
 function renderFunil(dt){
   const yr=dt.getFullYear(),mo=dt.getMonth();
+  const METAS=getMetas(dt);
   const mAcc=sumCom(yr,mo);
   const pOpt=Math.min(mAcc.oportunidades/METAS.opt*100,100);
   const pCt =Math.min(mAcc.contratos   /METAS.ct *100,100);
